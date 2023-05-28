@@ -1,11 +1,12 @@
 export function userReducer(state = null, action) {
   switch(action.type) {
-    case "user/loggedIn": {
-      const { displayName, email, photoURL } = action.payload;
+    case "user/setUser": {
+      const { displayName, email, photoURL, uid } = action.payload;
       return {
         name: displayName,
         email,
-        photoURL
+        photoURL,
+        id: uid
       }
     }
     case "user/loggedOut": {
@@ -16,9 +17,9 @@ export function userReducer(state = null, action) {
 }
 
 // Action creators
-export function loggedIn(user) {
+export function setUser(user) {
   return {
-    type: "user/loggedIn",
+    type: "user/setUser",
     payload: user
   }
 }

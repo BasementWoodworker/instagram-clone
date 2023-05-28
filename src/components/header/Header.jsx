@@ -1,17 +1,13 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { getAuth, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
 import { StyledHeader } from "./Header.styles";
-import { selectUser } from "../../redux/features/user/userSlice";
-import defaultAvatar from "../../assets/icons/default-avatar.svg";
+import { UserDropdown } from "./userDropdown/UserDropdown";
+
 
 export function Header() {
   const navigate = useNavigate();
-  const user = useSelector(selectUser);
-  const userName = user ? user.name : "";
-  const userAvatar = (user && user.photoURL) ?? defaultAvatar;
 
   function handleLogOut() {
     const auth = getAuth();
@@ -29,10 +25,7 @@ export function Header() {
     <StyledHeader>
       <h1>Fake Instagram</h1>
       <button className="log-out" title="Log Out" onClick={handleLogOut}></button>
-      <div className="user-info">
-        <span className="username">{userName}</span>
-        <img src={userAvatar} />
-      </div>
+      <UserDropdown />
     </StyledHeader>
   )
 }

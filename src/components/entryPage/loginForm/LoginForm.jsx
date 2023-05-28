@@ -27,11 +27,11 @@ export function LoginForm() {
       <h1>Login</h1>
       <label>
         <span>Email</span>
-        <input type="email" required ref={emailRef} value={"test.user.for.fake.instagram@gmail.com"} />
+        <input type="email" required ref={emailRef} defaultValue={"test.user.for.fake.instagram@gmail.com"} />
       </label>
       <label>
         <span>Password</span>
-        <input type="password" required ref={passwordRef} value={"asdzxc123"} />
+        <input type="password" required ref={passwordRef} defaultValue={"asdzxc123"} />
       </label>
       <button>Log In</button>
     </form>

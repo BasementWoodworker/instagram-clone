@@ -33,7 +33,7 @@ module.exports = {
         }
       },
       {
-        test: /\.(svg)$/i,
+        test: /\.(svg|gif)$/i,
         type: "asset/resource"
       }
     ]
@@ -44,5 +44,6 @@ module.exports = {
   },
   optimization: {
     runtimeChunk: "single"
-  }
+  },
+  devtool: "inline-source-map"
 }

@@ -5,10 +5,11 @@ import { initializeApp } from "firebase/app";
 import { getFirebaseConfig } from "../firebase.config";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-import { loggedIn, loggedOut } from "./redux/features/user/userSlice";
+import { setUser, loggedOut } from "./redux/features/user/userSlice";
 import { GlobalStyles } from "./GlobalStyles";
 import { EntryPage } from "./components/entryPage/EntryPage";
 import Feed from "./components/feed/Feed";
+import Settings from "./components/settings/Settings"
 
 const firebaseApp = initializeApp(getFirebaseConfig());
 
@@ -20,7 +21,7 @@ export function App() {
       if (user === null) {
         dispatch(loggedOut);
       } else {
-        dispatch(loggedIn(user));
+        dispatch(setUser(user));
       }
     })
   }, [])
@@ -32,6 +33,7 @@ export function App() {
         {["/", "/login"].map(path => <Route path={path} element={<EntryPage action="login" />} key={path} />)}
         <Route path="/register" element={<EntryPage action="register" />} />
         <Route path="/feed" element={<Feed />} />
+        <Route path="/settings" element={<Settings />} />
       </Routes>
     </BrowserRouter>
   )

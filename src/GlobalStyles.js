@@ -25,5 +25,8 @@ export const GlobalStyles = createGlobalStyle`
     min-height: 100%;
   }
 
-
+  .after-logging-in > main {
+    flex: 1 0 auto;
+    background-color: #f5f5f5;
+  }
 `

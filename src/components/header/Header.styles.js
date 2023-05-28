@@ -17,20 +17,4 @@ export const StyledHeader = styled.header`
     width: 40px;
     cursor: pointer;
   }
-
-  .user-info {
-    display: flex;
-    align-items: center;
-  }
-
-  .user-info > .username {
-    font-size: 24px;
-  }
-
-  .user-info > img {
-    height: 50px;
-    border: 1px solid grey;
-    border-radius: 100%;
-    margin: 0 10px;
-  }
 `

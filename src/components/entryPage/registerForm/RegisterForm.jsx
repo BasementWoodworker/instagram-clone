@@ -1,11 +1,13 @@
 import React, { useRef } from "react";
-import { getAuth, createUserWithEmailAndPassword, updateProfile, deleteUser, onAuthStateChanged } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import { getAuth, createUserWithEmailAndPassword, updateProfile, deleteUser } from "firebase/auth";
 
 export function RegisterForm() {
   const userNameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmationRef = useRef();
+  const navigate = useNavigate();
 
   async function submitHandler(e) {
     e.preventDefault();
@@ -17,6 +19,7 @@ export function RegisterForm() {
       console.log("Created new user")
       await updateProfile(auth.currentUser, { displayName: userNameRef.current.value })
       console.log("Updated username")
+      navigate("/feed");
     }
     catch(error) {
       console.log("Error creating new account", error)
