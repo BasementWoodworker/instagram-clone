@@ -1,15 +1,13 @@
 import styled from "styled-components";
 const borderRadius = "8px";
 
-export const StyledSettings = styled.main`
-  .settings-container {
-    display: flex;
-    width: 70%;
-    margin: 100px auto;
-    background-color: white;
-    border: 1px solid lightgrey;
-    border-radius: ${borderRadius}
-  }
+export const StyledSettings = styled.div`
+  display: flex;
+  width: 70%;
+  margin: 100px auto;
+  background-color: white;
+  border: 1px solid lightgrey;
+  border-radius: ${borderRadius};
 
   .setting-selection {
     border-right: 1.5px solid lightgrey;

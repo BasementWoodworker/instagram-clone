@@ -8,6 +8,12 @@ export const StyledHeader = styled.header`
   height: 70px;
   border-bottom: 1px solid lightgrey;
 
+  .logo {
+    font-size: 40px;
+    text-decoration: none;
+    color: inherit;
+  }
+
   button.log-out {
     background-color: inherit;
     border: none;

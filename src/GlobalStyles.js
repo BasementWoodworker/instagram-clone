@@ -18,15 +18,12 @@ export const GlobalStyles = createGlobalStyle`
     margin: auto;
   }
 
-  #root > .after-logging-in {
+  #root > main {
+    flex: 1 0 auto;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     min-height: 100%;
-  }
-
-  .after-logging-in > main {
-    flex: 1 0 auto;
     background-color: #f5f5f5;
   }
 `
