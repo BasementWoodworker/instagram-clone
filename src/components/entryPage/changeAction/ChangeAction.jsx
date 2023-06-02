@@ -7,20 +7,20 @@ export function ChangeAction({ newLocation }) {
     content = (
       <>
         <span>Don't have an account?</span>
-        <Link to="/register">Sign Up</Link>
+        <Link to="/register">Sign up</Link>
       </>
     )
   } else if (newLocation === "/login") {
     content = (
       <>
         <span>Already have an account?</span>
-        <Link to="/login">Log In</Link>
+        <Link to="/login">Log in</Link>
       </>
     )
   }
 
   return(
-    <div>
+    <div className="change-action">
       {content}
     </div>
   )

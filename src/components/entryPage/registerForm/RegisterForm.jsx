@@ -1,8 +1,12 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth, createUserWithEmailAndPassword, updateProfile, deleteUser } from "firebase/auth";
 
+import { LoadingSpinner } from "../../loadingSpinner/LoadingSpinner";
+
 export function RegisterForm() {
+  const [errorMsg, setErrorMsg] = useState("")
+  const [loading, setLoading] = useState(false);
   const userNameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -11,29 +15,22 @@ export function RegisterForm() {
 
   async function submitHandler(e) {
     e.preventDefault();
-    const auth = getAuth();
-    console.log(emailRef.current.value);
-    console.log(passwordRef.current.value);
     try {
+      setLoading(true);
+      const auth = getAuth();
       await createUserWithEmailAndPassword(auth, emailRef.current.value, passwordRef.current.value);
       console.log("Created new user")
-      await updateProfile(auth.currentUser, { displayName: userNameRef.current.value })
+      await updateProfile(auth.currentUser, { displayName: userNameRef.current.value });
       console.log("Updated username")
       navigate("/feed");
     }
     catch(error) {
-      console.log("Error creating new account", error)
+      if (error.message === "Firebase: Error (auth/invalid-email).") error.message = "Invalid email";
+      if (error.message === "Firebase: Error (auth/email-already-in-use).") error.message = "Error: Email is already in use";
+      setErrorMsg(error.message);
     }
-  }
-
-  async function delUser(e) {
-    e.preventDefault();
-    const auth = getAuth();
-    try {
-      setTimeout(() => deleteUser(auth.currentUser).then(console.log("USER DELETED SUCCESSFULLY")), 1000)
-    }
-    catch(error) {
-      console.log("Error deleting user", error);
+    finally {
+      setLoading(false);
     }
   }
 
@@ -42,24 +39,24 @@ export function RegisterForm() {
     <form onSubmit={submitHandler}>
       <h1>Create new account</h1>
       <label>
-        <span>Your Username</span>
-        <input required ref={userNameRef} />
+        <input required ref={userNameRef} placeholder=" " />
+        <span>Username</span>
       </label>
       <label>
+        <input type="email" required ref={emailRef} placeholder=" " />
         <span>Email</span>
-        <input type="email" required ref={emailRef} />
       </label>
       <label>
+        <input type="password" required ref={passwordRef} placeholder=" " minLength="6" />
         <span>Password</span>
-        <input type="password" required ref={passwordRef} />
       </label>
       <label>
+        <input type="password" required ref={passwordConfirmationRef} placeholder=" " minLength="6" />
         <span>Confirm password</span>
-        <input type="password" required ref={passwordConfirmationRef} />
       </label>
+      {loading ? <LoadingSpinner /> : <div className="error-message">{errorMsg}</div>}
       <button type="submit">Register</button>
     </form>
-    <button type="button" onClick={delUser}>Delete user</button>
     </>
   )
 }

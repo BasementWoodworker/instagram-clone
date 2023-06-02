@@ -5,6 +5,8 @@ import { StyledEntryPage } from "./EntryPage.styles";
 import { RegisterForm } from "./registerForm/RegisterForm";
 import { LoginForm } from "./loginForm/LoginForm";
 import { ChangeAction } from "./changeAction/ChangeAction";
+import { EnterWithoutRegistration } from "./EnterWithoutRegistration";
+import greetingImage from "./../../assets/images/greeting-image.jpg";
 
 export function EntryPage() {
   const location = useLocation().pathname;
@@ -13,9 +15,12 @@ export function EntryPage() {
 
   return(
     <StyledEntryPage className="entry-page">
-      <img alt="image placeholder" />
-      {currentForm}
-      <ChangeAction newLocation={newLocation} />
+      <img className="greeting-image" alt="greeting image" src={greetingImage} />
+      <div className="right-side">
+        {currentForm}
+        <ChangeAction newLocation={newLocation} />
+        {location === "/login" ? <EnterWithoutRegistration /> : null}
+      </div>
     </StyledEntryPage>
   )
 }

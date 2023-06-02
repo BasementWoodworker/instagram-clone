@@ -1,39 +1,44 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
+import { LoadingSpinner } from "../../loadingSpinner/LoadingSpinner";
+
 export function LoginForm() {
+  const [errorMsg, setErrorMsg] = useState("")
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const emailRef = useRef();
   const passwordRef = useRef();
 
   function submitHandler(e) {
     e.preventDefault();
-    const auth = getAuth();
-    console.log(emailRef.current.value)
-    console.log(passwordRef.current.value);
-    signInWithEmailAndPassword(auth, emailRef.current.value, passwordRef.current.value)
+    setLoading(true);
+    signInWithEmailAndPassword(getAuth(), emailRef.current.value, passwordRef.current.value)
       .then(userCredential => {
-        console.log(userCredential);
         navigate("/feed");
       })
       .catch(error => {
-        console.log(error);
+        if (error.message === "Firebase: Error (auth/wrong-password).") error.message = "Wrong password";
+        if (error.message === "Firebase: Error (auth/user-not-found).") error.message = "User not found";
+        setErrorMsg(error.message);
       })
+      .finally(() => setLoading(false))
   }
 
   return (
     <form onSubmit={submitHandler}>
-      <h1>Login</h1>
+      <h1>Log In</h1>
       <label>
+        <input type="email" required ref={emailRef} placeholder=" " />
         <span>Email</span>
-        <input type="email" required ref={emailRef} defaultValue={"test.user.for.fake.instagram@gmail.com"} />
       </label>
       <label>
+        <input type="password" required ref={passwordRef} placeholder=" " />
         <span>Password</span>
-        <input type="password" required ref={passwordRef} defaultValue={"asdzxc123"} />
       </label>
-      <button>Log In</button>
+      {loading ? <LoadingSpinner /> : <div className="error-message">{errorMsg}</div>}
+      <button type="submit">Log in</button>
     </form>
   )
 }
