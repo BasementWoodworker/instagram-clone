@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getAuth, deleteUser } from "firebase/auth";
+import { getFirestore, doc, deleteDoc, getDoc } from "firebase/firestore";
 
 import { StyledDeleteAccount } from "./DeleteAccount.styles";
 import { Reauthentication } from "../reauthentication/Reauthentication";
 import { LoadingSpinner } from "../../loadingSpinner/LoadingSpinner";
-import { loggedOut } from "../../../redux/features/user/userSlice";
+import { selectUser, loggedOut } from "../../../redux/features/user/userSlice";
+import { deleteFirebaseStorageFolder } from "../../../reusableFunctions/deleteFirebaseStorageFolder";
 
 export function DeleteAccount() {
   const [showReauthentication, setShowReauthentication] = useState(false);
@@ -14,6 +16,8 @@ export function DeleteAccount() {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const user = useSelector(selectUser);
+  const firestore = getFirestore();
 
   const showSuccessMsg = () => setMessage({ type: "success", text: "✓ Account successfully deleted" });
   const showErrorMsg = (error) => setMessage({ type: "error", text: "Error deleting account: " + error });
@@ -23,9 +27,12 @@ export function DeleteAccount() {
     setShowReauthentication(true);
   }
 
-  async function deleteAccount() {
+  async function deleteAllData() {
     try {
-      setLoading(true)
+      setLoading(true);
+      await deleteUserPosts();
+      await deleteUserImages();
+      await deleteFirestoreAccount();
       await deleteUser(getAuth().currentUser);
       showSuccessMsg();
       dispatch(loggedOut);
@@ -39,6 +46,28 @@ export function DeleteAccount() {
     }
   }
 
+  async function deleteFirestoreAccount() {
+    await deleteDoc(doc(firestore, "users", user.uid));
+    await deleteDoc(doc(firestore, "takenUsernames", user.username));
+  }
+
+  async function deleteUserPosts() {
+    const userPostsIds = (await getDoc(doc(firestore, "users", user.uid))).data().posts;
+    for (const postId of userPostsIds) {
+      const postRef = doc(firestore, "posts", postId);
+      await deleteDoc(postRef);
+    }
+  }
+
+  async function deleteUserImages() {
+    try {
+      await deleteFirebaseStorageFolder(`userImages/${user.uid}`);
+    }
+    catch {
+      // User hasn't uploaded any images
+    }
+  }
+
   return(
     <>
       <StyledDeleteAccount onSubmit={submitHandler} className="setting">
@@ -46,7 +75,7 @@ export function DeleteAccount() {
         {loading ? <LoadingSpinner /> : <div className={"message " + message.type}>{message.text}</div>}
         <button type="submit" className="delete-account">Delete Account</button>
       </StyledDeleteAccount>
-      {showReauthentication && <Reauthentication hide={() => setShowReauthentication(false)} action={deleteAccount} />}
+      {showReauthentication && <Reauthentication hide={() => setShowReauthentication(false)} action={deleteAllData} />}
     </>
   )
 }

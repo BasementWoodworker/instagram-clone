@@ -71,6 +71,7 @@ export const StyledEntryPage = styled.div`
     color: grey;
     transition: 0.1s;
     font-size: 12px;
+    pointer-events: none;
   }
 
   input:placeholder-shown + span {

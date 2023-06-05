@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getAuth, updateEmail } from "firebase/auth";
 
 import { StyledChangeEmail } from "./ChangeEmail.styles";
-import { selectUser, setUser } from "../../../redux/features/user/userSlice";
+import { selectUser, loggedIn } from "../../../redux/features/user/userSlice";
 import { Reauthentication } from "../reauthentication/Reauthentication";
 import { LoadingSpinner } from "../../loadingSpinner/LoadingSpinner";
 
@@ -30,7 +30,7 @@ export function ChangeEmail() {
       const user = getAuth().currentUser;
       console.log(emailRef.current.value);
       await updateEmail(user, emailRef.current.value);
-      dispatch(setUser(user))
+      dispatch(loggedIn(user))
       showSuccessMsg();
     }
     catch(error) {

@@ -6,8 +6,8 @@ export function EnterWithoutRegistration() {
   const navigate = useNavigate();
 
   async function logInAsTestAccount() {
-    signInWithEmailAndPassword(getAuth(), "test.user.for.fake.instagram@gmail.com", "asdzxc123")
-      .then(userCredential => {
+    signInWithEmailAndPassword(getAuth(), "test.user.for.fake.instagram@gmail.com", "asdzxc")
+      .then(() => {
         navigate("/feed");
       })
       .catch(error => {

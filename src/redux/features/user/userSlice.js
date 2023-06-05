@@ -1,12 +1,19 @@
 export function userReducer(state = null, action) {
   switch(action.type) {
-    case "user/setUser": {
-      const { displayName, email, photoURL, uid } = action.payload;
+    case "user/loggedIn": {
+      const { username, fullName, email, photoURL, uid } = action.payload;
       return {
-        name: displayName,
+        username,
+        fullName,
         email,
         photoURL,
-        id: uid
+        uid,
+      }
+    }
+    case "user/modifyInfo": {
+      return {
+        ...state,
+        ...action.payload
       }
     }
     case "user/loggedOut": {
@@ -17,14 +24,21 @@ export function userReducer(state = null, action) {
 }
 
 // Action creators
-export function setUser(user) {
+export function loggedIn(user) {
   return {
-    type: "user/setUser",
+    type: "user/loggedIn",
     payload: user
   }
 }
 
 export const loggedOut = { type: "user/loggedOut" };
+
+export function modifyInfo(payload) {
+  return {
+    type: "user/modifyInfo",
+    payload
+  }
+}
 
 // Selectors
 export const selectUser = (state) => state.user;

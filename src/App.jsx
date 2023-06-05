@@ -4,17 +4,25 @@ import { useDispatch } from "react-redux";
 import { initializeApp } from "firebase/app";
 import { getFirebaseConfig } from "../firebase.config";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 
-import { setUser, loggedOut } from "./redux/features/user/userSlice";
+import { loggedIn, loggedOut } from "./redux/features/user/userSlice";
 import { GlobalStyles } from "./GlobalStyles";
 import { RootPathRedirect } from "./RootPathRedirect";
+import { Header } from "./components/header/Header";
+import { Footer } from "./components/footer/Footer";
 import { EntryPage } from "./components/entryPage/EntryPage";
 import { Feed } from "./components/feed/Feed";
 import { Settings } from "./components/settings/Settings"
-import { Header } from "./components/header/Header";
-import { Footer } from "./components/footer/Footer";
+import { MakeNewPost } from "./components/makeNewPost/MakeNewPost";
 
 const firebaseApp = initializeApp(getFirebaseConfig());
+
+async function requestUserInfo(uid) {
+  const userRef = doc(getFirestore(), "users", uid);
+  const user = await getDoc(userRef);
+  return user.data();
+}
 
 export function App() {
   const dispatch = useDispatch();
@@ -24,7 +32,16 @@ export function App() {
       if (user === null) {
         dispatch(loggedOut);
       } else {
-        dispatch(setUser(user));
+        requestUserInfo(user.uid).then((userInfo) => {
+          const { username, fullName } = userInfo;
+          dispatch(loggedIn({
+            username,
+            fullName,
+            email: user.email,
+            uid: user.uid,
+            photoURL: user.photoURL
+          }));
+        })
       }
     })
   }, [])
@@ -40,6 +57,7 @@ export function App() {
         <Route path="/register" element={<EntryPage />} />
         <Route path="/feed" element={<Feed />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/make-new-post" element={<MakeNewPost />} />
       </Routes>
       </main>
       <Footer />

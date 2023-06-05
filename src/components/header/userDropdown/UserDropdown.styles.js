@@ -9,6 +9,7 @@ export const StyledUserDropdown = styled.div`
 
   img.avatar {
     height: 50px;
+    width: 50px;
     border: 1px solid grey;
     border-radius: 100%;
     margin: 0 10px;
