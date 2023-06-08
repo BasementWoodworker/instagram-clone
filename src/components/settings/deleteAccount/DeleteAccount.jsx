@@ -9,6 +9,7 @@ import { Reauthentication } from "../reauthentication/Reauthentication";
 import { LoadingSpinner } from "../../loadingSpinner/LoadingSpinner";
 import { selectUser, loggedOut } from "../../../redux/features/user/userSlice";
 import { deleteFirebaseStorageFolder } from "../../../reusableFunctions/deleteFirebaseStorageFolder";
+import { deletePostComments, deletePostDoc } from "../../../reusableFunctions/deletePostFromDatabase";
 
 export function DeleteAccount() {
   const [showReauthentication, setShowReauthentication] = useState(false);
@@ -54,8 +55,8 @@ export function DeleteAccount() {
   async function deleteUserPosts() {
     const userPostsIds = (await getDoc(doc(firestore, "users", user.uid))).data().posts;
     for (const postId of userPostsIds) {
-      const postRef = doc(firestore, "posts", postId);
-      await deleteDoc(postRef);
+      await deletePostComments(postId);
+      await deletePostDoc(postId);
     }
   }
 

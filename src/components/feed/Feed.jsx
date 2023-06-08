@@ -6,13 +6,13 @@ import { StyledFeed } from "./Feed.styles";
 import { UserPost } from "./userPost/UserPost";
 
 export function Feed() {
-  const [posts, setPosts] = useState([<UserPost placeholder={true}/>]);
+  const [posts, setPosts] = useState([{ placeholder: true, id: 1 }]);
 
   async function loadPosts() {
     const response = await getDocs(collection(getFirestore(), "posts"));
     const processedResponse = await Promise.all(response.docs.map( async post => {
-      const { text, uid } = post.data();
-      const avatarPath = `${uid}/avatar`;
+      const { text, uid, likes } = post.data();
+      const avatarPath = `userImages/${uid}/avatar`;
       const imagePath = `userImages/${uid}/${post.id}`;
       const username = (await getDoc(doc(getFirestore(), "users", uid))).data().username;
       const postImage = await getDownloadURL(ref(getStorage(), imagePath));
@@ -25,10 +25,15 @@ export function Feed() {
         avatar: posterAvatar,
         image: postImage,
         text,
-        id: post.id
+        id: post.id,
+        likes
       }
     }));
     setPosts(processedResponse);
+  }
+
+  function removePostFromArray(postId) {
+    setPosts(posts.filter(post => post.id !== postId));
   }
 
   useEffect(() => { 
@@ -37,7 +42,19 @@ export function Feed() {
 
   return(
     <StyledFeed>
-      {posts.map(post => <UserPost username={post.username} image={post.image} text={post.text} avatar={post.avatar} key={post.id} />)}
+      {posts.map(post => {
+        return <UserPost
+          placeholder={post.placeholder}
+          key={post.id}
+          postId={post.id}
+          username={post.username}
+          image={post.image}
+          text={post.text}
+          avatar={post.avatar}
+          initialLikes={post.likes}
+          removePostFromArray={removePostFromArray}
+        />
+      })}
     </StyledFeed>
   )
 }

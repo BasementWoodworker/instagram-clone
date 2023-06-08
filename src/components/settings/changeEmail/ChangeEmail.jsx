@@ -28,7 +28,6 @@ export function ChangeEmail() {
     try {
       setLoading(true);
       const user = getAuth().currentUser;
-      console.log(emailRef.current.value);
       await updateEmail(user, emailRef.current.value);
       dispatch(loggedIn(user))
       showSuccessMsg();

@@ -34,6 +34,7 @@ export function MakeNewPost() {
       const newPost = {
         uid: user.uid,
         text: textInputRef.current.value,
+        likes: []
       }
       const postData = await addDoc(collection(db, "posts"), newPost);
 
