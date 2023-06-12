@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export function MakeNewComment({ makeNewComment, commentInputRef, setDisplayedComments }) {
+export function MakeNewComment({ makeNewComment, commentInputRef }) {
   const [disablePostButton, setDisablePostButton] = useState(true);
 
   function togglePostButton() {
@@ -13,7 +13,6 @@ export function MakeNewComment({ makeNewComment, commentInputRef, setDisplayedCo
     setDisablePostButton(true);
     try {
       const newComment = await makeNewComment();
-      setDisplayedComments(prev => [newComment].concat(prev));
       commentInputRef.current.value = "";
     }
     catch(error) {

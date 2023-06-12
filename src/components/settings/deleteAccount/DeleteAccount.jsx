@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getAuth, deleteUser } from "firebase/auth";
@@ -10,6 +10,7 @@ import { LoadingSpinner } from "../../loadingSpinner/LoadingSpinner";
 import { selectUser, loggedOut } from "../../../redux/features/user/userSlice";
 import { deleteFirebaseStorageFolder } from "../../../reusableFunctions/deleteFirebaseStorageFolder";
 import { deletePostComments, deletePostDoc } from "../../../reusableFunctions/deletePostFromDatabase";
+import { unfollowEveryone } from "../../../reusableFunctions/followFunctions";
 
 export function DeleteAccount() {
   const [showReauthentication, setShowReauthentication] = useState(false);
@@ -31,6 +32,7 @@ export function DeleteAccount() {
   async function deleteAllData() {
     try {
       setLoading(true);
+      await unfollowEveryone(user.uid);
       await deleteUserPosts();
       await deleteUserImages();
       await deleteFirestoreAccount();

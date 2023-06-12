@@ -44,6 +44,7 @@ export function Feed() {
     <StyledFeed>
       {posts.map(post => {
         return <UserPost
+          view="in-feed"
           placeholder={post.placeholder}
           key={post.id}
           postId={post.id}

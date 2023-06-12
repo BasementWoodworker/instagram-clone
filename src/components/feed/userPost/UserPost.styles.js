@@ -4,6 +4,9 @@ import likedIcon from "../../../assets/icons/liked.svg";
 import commentIcon from "../../../assets/icons/comment.svg";
 
 const darkblue = "#285e91";
+const scrollbarThumbColor = "#333333";
+const scrollbarTrackColor = "#eeeeee";
+
 
 export const StyledUserPost = styled.div`
   position: relative;
@@ -19,7 +22,7 @@ export const StyledUserPost = styled.div`
     min-height: 400px;
   }
 
-  & > *:not(.post-image, form.make-new-comment) {
+  & > *:not(.post-image-container, form.make-new-comment, button.delete-post) {
     margin: 8px;
   }
 
@@ -27,6 +30,11 @@ export const StyledUserPost = styled.div`
     position: absolute;
     top: 0;
     right: 0;
+    cursor: pointer;
+    border: none;
+    padding: 4px;
+    background-color: inherit;
+    font-size: 20px;
   }
 
   .author-info {
@@ -89,19 +97,47 @@ export const StyledUserPost = styled.div`
     mask-size: contain;
   }
 
+  #like-amount {
+    font-weight: bold;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+
   .comments {
     max-height: 180px;
     overflow-y: auto;
   }
+  
+  /* Scrollbar */
+
+  .comments {
+    scrollbar-width: normal;
+    scrollbar-color: ${scrollbarThumbColor} ${scrollbarTrackColor};
+  }
+
+  .comments::-webkit-scrollbar {
+    width: 0.5vw;
+  }
+
+  .comments::-webkit-scrollbar-track {
+    background-color: ${scrollbarTrackColor};
+  }
+
+  .comments::-webkit-scrollbar-thumb {
+    background-color: ${scrollbarThumbColor};
+  }
+
+  /* End Scrollbar */
 
   .comment-container {
     display: flex;
+    align-items: center;
     gap: 8px;
     margin: 4px 0;
   }
 
   .comment-container > .author {
-    align-self: center;
+    align-self: flex-start;
     font-weight: bold;
     white-space: nowrap;
     color: inherit;
@@ -113,10 +149,18 @@ export const StyledUserPost = styled.div`
   }
 
   .comment-container > button.delete-comment {
-    align-self: center;
+    visibility: hidden;
+    align-self: flex-start;
     background: none;
     border: none;
     cursor: pointer;
+    margin-left: auto;
+    padding-right: 10px;
+    font-size: 17px;
+  }
+
+  .comment-container:hover button.delete-comment {
+    visibility: visible;
   }
 
   button.view-all-comments {
@@ -125,10 +169,6 @@ export const StyledUserPost = styled.div`
     background: none;
     cursor: pointer;
     padding: 2px 0;
-  }
-
-  button.delete-comment {
-    margin-left: auto;
   }
 
   form.make-new-comment {
@@ -160,5 +200,51 @@ export const StyledUserPost = styled.div`
   form.make-new-comment > button[type="submit"]:disabled {
     color: grey;
     cursor: default;
+  }
+`
+
+export const StyledUserPostFullView = styled(StyledUserPost)`
+  display: flex;
+  width: auto;
+  max-width: 1000px;
+  height: 85%;
+  max-height: 85%;
+  border-radius: 0;
+
+  .separator-line {
+    height: 1px;
+    background-color: grey;
+    margin-bottom: 8px;
+  }
+
+  img.post-image {
+    margin: 0;
+    max-width: 600px;
+    object-fit: stretch;
+  }
+
+  #right-part {
+    margin: 0;
+    flex: 1 1 300px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #right-part > *:not(.separator-line, form.make-new-comment, button.delete-post) {
+    margin: 0 15px;
+  }
+
+  #right-part > .author-info {
+    padding: 15px 0;
+  }
+
+  #right-part > .comments {
+    flex: 1 1 0;
+    max-height: 100%;
+  }
+
+  #right-part > form.make-new-comment > input {
+    width: auto;
+    border-radius: 0;
   }
 `

@@ -1,13 +1,14 @@
 export function userReducer(state = null, action) {
   switch(action.type) {
     case "user/loggedIn": {
-      const { username, fullName, email, photoURL, uid } = action.payload;
+      const { username, fullName, email, photoURL, uid, following } = action.payload;
       return {
         username,
         fullName,
         email,
         photoURL,
         uid,
+        following
       }
     }
     case "user/modifyInfo": {

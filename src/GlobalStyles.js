@@ -13,6 +13,11 @@ export const GlobalStyles = createGlobalStyle`
     height: 100%;
   }
 
+  #root {
+    display: flex;
+    flex-direction: column;
+  }
+
   #root > .entry-page {
     width: min-content;
     margin: auto;
@@ -23,7 +28,7 @@ export const GlobalStyles = createGlobalStyle`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 100%;
+    
     background-color: #f5f5f5;
   }
 `

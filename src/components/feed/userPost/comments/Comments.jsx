@@ -4,13 +4,13 @@ import { getFirestore, collection, getDocs, getDoc, doc, query, orderBy, limit }
 import { Comment } from "./Comment";
 import { LoadingSpinner } from "../../../loadingSpinner/LoadingSpinner";
 
-export function Comments({ postId, author, authorComment, displayedComments, setDisplayedComments }) {
+export function Comments({ view, postId, author, authorComment, displayedComments, setDisplayedComments }) {
   const [hideShowAllComments, setHideShowAllComments] = useState(true);
   const [loadingAllComments, setLoadingAllComments] = useState(false);
 
-  async function loadFirstThreeComments() {
+  async function loadThreeLatestComments() {
     const commentsRef = collection(getFirestore(), "posts", postId, "comments");
-    const q = query(commentsRef, orderBy("timestamp"), limit(4));
+    const q = query(commentsRef, orderBy("timestamp", "desc"), limit(4));
     const response = await getDocs(q);
     if (response.docs.length === 4) {
       setHideShowAllComments(false);
@@ -21,7 +21,8 @@ export function Comments({ postId, author, authorComment, displayedComments, set
   }
 
   useEffect(() => {
-    loadFirstThreeComments();
+    if (view === "in-feed") loadThreeLatestComments()
+    else if (view === "full") viewAllComments();
   }, [])
 
   async function viewAllComments() {
@@ -29,7 +30,9 @@ export function Comments({ postId, author, authorComment, displayedComments, set
       setLoadingAllComments(true);
       setHideShowAllComments(true);
       const commentsRef = collection(getFirestore(), "posts", postId, "comments");
-      const q = query(commentsRef, orderBy("timestamp"));
+      let q;
+      if (view === "in-feed") q = query(commentsRef, orderBy("timestamp", "desc"))
+      else if (view === "full") q = query(commentsRef, orderBy("timestamp"))
       const response = await getDocs(q);
       await processLoadedComments(response.docs);
     }
@@ -43,26 +46,26 @@ export function Comments({ postId, author, authorComment, displayedComments, set
 
   async function processLoadedComments(commentDocs) {
     const loadedComments = [];
-    for (const comment of commentDocs) {
-      const author = await getDoc(doc(getFirestore(), "users", comment.data().uid))
+    for (const commentDoc of commentDocs) {
+      if (displayedComments.find(comment => comment.id === commentDoc.id)) continue;
+      const author = await getDoc(doc(getFirestore(), "users", commentDoc.data().uid))
       const authorUsername = author.data() ? author.data().username : "Deleted account";
       loadedComments.push({
-        text: comment.data().text,
+        text: commentDoc.data().text,
         username: authorUsername,
-        id: comment.id
+        id: commentDoc.id
       })
     }
-    setDisplayedComments(loadedComments);
+    if (view === "in-feed") setDisplayedComments(prev => prev.concat(loadedComments))
+    else if (view === "full") setDisplayedComments(prev => loadedComments.concat(prev));
   }
 
   return(
     <div className="comments">
-      <div>
-        <Comment text={authorComment} username={author} key="authorsComment" />
-        {hideShowAllComments || <button className="view-all-comments" onClick={viewAllComments}>View all comments</button>}
-        {loadingAllComments && <LoadingSpinner />}
-        {displayedComments.map(comment => <Comment key={comment.id} text={comment.text} username={comment.username} commentId={comment.id} postId={postId} />)}
-      </div>
+      <Comment text={authorComment} username={author} key="authorsComment" />
+      {hideShowAllComments || <button className="view-all-comments" onClick={viewAllComments}>View all comments</button>}
+      {loadingAllComments && <LoadingSpinner />}
+      {displayedComments.map(comment => <Comment key={comment.id} text={comment.text} username={comment.username} commentId={comment.id} postId={postId} />)}
     </div>
   )
 }

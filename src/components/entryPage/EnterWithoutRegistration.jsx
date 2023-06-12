@@ -8,7 +8,7 @@ export function EnterWithoutRegistration() {
   async function logInAsTestAccount() {
     signInWithEmailAndPassword(getAuth(), "test.user.for.fake.instagram@gmail.com", "asdzxc")
       .then(() => {
-        navigate("/feed");
+        
       })
       .catch(error => {
         console.log(error);

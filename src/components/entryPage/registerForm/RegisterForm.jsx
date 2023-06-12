@@ -1,11 +1,13 @@
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { getFirestore, setDoc, doc, getDocs, collection } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 import { LoadingSpinner } from "../../loadingSpinner/LoadingSpinner";
 import { checkIfUsernameIsTaken } from "../../../reusableFunctions/checkIfUsernameIsTaken";
+import { loggedIn } from "../../../redux/features/user/userSlice";
 
 export function RegisterForm() {
   const [errorMsg, setErrorMsg] = useState("")
@@ -16,12 +18,14 @@ export function RegisterForm() {
   const passwordRef = useRef();
   const passwordConfirmationRef = useRef();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   async function createUserInFirestore(username, fullName, uid) {
     const user = {
       username,
       fullName,
-      posts: []
+      posts: [],
+      following: []
     }
     setDoc(doc(getFirestore(), "users", uid), user);
     setDoc(doc(getFirestore(), "takenUsernames", username), { uid });
@@ -33,6 +37,14 @@ export function RegisterForm() {
     await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(auth.currentUser, { photoURL: defaultAvatar });
     await createUserInFirestore(username, fullName, auth.currentUser.uid);
+    dispatch(loggedIn({
+      username,
+      fullName,
+      email,
+      uid: auth.currentUser.uid,
+      photoURL: defaultAvatar,
+      following: []
+    }));
   }
 
   function checkPasswordMismatch() {

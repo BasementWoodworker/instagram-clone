@@ -14,11 +14,11 @@ export function Header() {
   if (noHeaderAndFooterPaths.includes(location)) return null;
 
   function handleLogOut() {
+    navigate("/login");
     const auth = getAuth();
     signOut(auth)
       .then(() => {
         console.log("LogOut success");
-        navigate("/login");
       })
       .catch(error => {
         console.log("LogOut error", error);

@@ -16,7 +16,7 @@ export function LoginForm() {
     setLoading(true);
     signInWithEmailAndPassword(getAuth(), emailRef.current.value, passwordRef.current.value)
       .then(userCredential => {
-        navigate("/feed");
+        // Function at App.jsx takes care of this
       })
       .catch(error => {
         if (error.message === "Firebase: Error (auth/wrong-password).") error.message = "Wrong password";
