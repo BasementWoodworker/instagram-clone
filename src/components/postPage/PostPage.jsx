@@ -4,7 +4,7 @@ import { getFirestore, doc, getDoc } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 import { StyledPostPage } from "./PostPage.styles";
-import { UserPost } from "../feed/userPost/UserPost";
+import { UserPost } from "../userPost/UserPost";
 import { LoadingSpinner } from "../loadingSpinner/LoadingSpinner";
 
 export function PostPage() {

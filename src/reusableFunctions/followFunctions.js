@@ -15,7 +15,7 @@ import { selectUser, modifyInfo } from "../redux/features/user/userSlice";
 
 export async function followUser(yourId, followedUserId) {
   const firestore = getFirestore();
-  await setDoc(doc(firestore, "users", followedUserId, "followers", yourId), { dummyField: "dummyField" });
+  await setDoc(doc(firestore, "users", followedUserId, "followers", yourId), { ownerId: followedUserId });
   await updateDoc(doc(firestore, "users", yourId), {
     following: arrayUnion(followedUserId)
   })

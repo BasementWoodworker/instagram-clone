@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import likeIcon from "../../../assets/icons/like.svg";
-import likedIcon from "../../../assets/icons/liked.svg";
-import commentIcon from "../../../assets/icons/comment.svg";
+import likeIcon from "../../assets/icons/like.svg";
+import likedIcon from "../../assets/icons/liked.svg";
+import commentIcon from "../../assets/icons/comment.svg";
 
 const darkblue = "#285e91";
 const scrollbarThumbColor = "#333333";

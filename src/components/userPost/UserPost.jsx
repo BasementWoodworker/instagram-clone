@@ -14,11 +14,11 @@ import {
 } from "firebase/firestore";
 
 import { StyledUserPost, StyledUserPostFullView } from "./UserPost.styles";
-import { selectUser } from "../../../redux/features/user/userSlice";
+import { selectUser } from "../../redux/features/user/userSlice";
 import { Comments } from "./comments/Comments";
 import { MakeNewComment } from "./comments/MakeNewComment";
-import { AreYouSure } from "../../areYouSure/areYouSure";
-import { deletePostFromDatabase } from "../../../reusableFunctions/deletePostFromDatabase";
+import { AreYouSure } from "../areYouSure/areYouSure";
+import { deletePostFromDatabase } from "../../reusableFunctions/deletePostFromDatabase";
 
 export function UserPost({ view, postId, avatar, username, image, text, initialLikes, placeholder, removePostFromArray }) {
   if (placeholder) return <StyledUserPost className="placeholder" />

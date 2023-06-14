@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getAuth, deleteUser } from "firebase/auth";
-import { getFirestore, doc, deleteDoc, getDoc } from "firebase/firestore";
+import { getFirestore, doc, deleteDoc, getDoc, collection, getDocs } from "firebase/firestore";
 
 import { StyledDeleteAccount } from "./DeleteAccount.styles";
 import { Reauthentication } from "../reauthentication/Reauthentication";
@@ -52,6 +52,10 @@ export function DeleteAccount() {
   async function deleteFirestoreAccount() {
     await deleteDoc(doc(firestore, "users", user.uid));
     await deleteDoc(doc(firestore, "takenUsernames", user.username));
+    const followersCollection = await getDocs(collection(firestore, "users", user.uid, "followers"));
+    for (const followerDoc of followersCollection.docs) {
+      await deleteDoc(followerDoc);
+    }
   }
 
   async function deleteUserPosts() {

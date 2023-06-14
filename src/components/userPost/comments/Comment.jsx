@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getFirestore, doc, deleteDoc } from "firebase/firestore";
 
-import { selectUser } from "../../../../redux/features/user/userSlice";
-import { AreYouSure } from "../../../areYouSure/areYouSure";
+import { selectUser } from "../../../redux/features/user/userSlice";
+import { AreYouSure } from "../../areYouSure/areYouSure";
 
 export function Comment({ text, username, commentId, postId }) {
   const [isDeleted, setIsDeleted] = useState(false);

@@ -49,7 +49,6 @@ export const StyledUserPage = styled.div`
   }
 
   .loading-spinner {
-    display: block;
     margin: 100px auto;
   }
 

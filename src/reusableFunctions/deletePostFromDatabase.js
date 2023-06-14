@@ -12,7 +12,6 @@ export async function deletePostComments(postId) {
   const commentsRef = collection(getFirestore(), "posts", postId, "comments");
   const comments = await getDocs(commentsRef);
   for (const comment of comments.docs) {
-    console.log(comment);
     await deleteDoc(comment.ref);
   }
 }

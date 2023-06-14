@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { getFirestore, doc, addDoc, collection, updateDoc, arrayUnion } from "firebase/firestore";
+import { getFirestore, doc, addDoc, collection, updateDoc, arrayUnion, serverTimestamp } from "firebase/firestore";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 import { getAuth } from "firebase/auth";
 import { useSelector } from "react-redux";
@@ -34,7 +34,8 @@ export function MakeNewPost() {
       const newPost = {
         uid: user.uid,
         text: textInputRef.current.value,
-        likes: []
+        likes: [],
+        timestamp: serverTimestamp()
       }
       const postData = await addDoc(collection(db, "posts"), newPost);
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getFirestore, collection, getDocs, getDoc, doc, query, orderBy, limit } from "firebase/firestore";
 
 import { Comment } from "./Comment";
-import { LoadingSpinner } from "../../../loadingSpinner/LoadingSpinner";
+import { LoadingSpinner } from "../../loadingSpinner/LoadingSpinner";
 
 export function Comments({ view, postId, author, authorComment, displayedComments, setDisplayedComments }) {
   const [hideShowAllComments, setHideShowAllComments] = useState(true);
