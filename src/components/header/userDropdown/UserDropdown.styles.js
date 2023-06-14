@@ -23,7 +23,6 @@ export const StyledUserDropdown = styled.div`
   .options {
     z-index: ${({ showDropdown }) => showDropdown ? 10 : -1};
     position: absolute;
-    padding: 8px;
     padding-top: 10px;
     display: flex;
     flex-direction: column;
