@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { getFirestore, doc, getDoc, getDocs, collection, query, limit, orderBy, startAfter } from "firebase/firestore";
+import { getFirestore, doc, getDoc, getDocs, collection, query, limit, orderBy, startAfter, endBefore, startAt, endAt } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 import { StyledFeed } from "./Feed.styles";
@@ -8,25 +8,41 @@ import { LoadingSpinner } from "../loadingSpinner/LoadingSpinner";
 
 export function Feed() {
   const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [stopPoint, setStopPoint] = useState(null);
   const [distanceFromBottom, setDistanceFromBottom] = useState(0);
   const [message, setMessage] = useState("");
   const feedRef = useRef();
 
-  async function loadMorePosts() {
-    setLoading(true);
+  async function firstLoad() {
     try {
-      const q = query(collection(getFirestore(), "posts"), orderBy("timestamp"), limit(7), startAfter(stopPoint));
-      const response = await getDocs(q);
+      const firstQ = query(collection(getFirestore(), "posts"), orderBy("timestamp", "desc"), limit(7));
+      const response = await getDocs(firstQ);
       const lastDisplayedDoc = response.docs[response.docs.length - 1];
-      if (!lastDisplayedDoc) setMessage("No more posts");
+      if (!lastDisplayedDoc) setMessage("End of posts");
       setStopPoint(lastDisplayedDoc);
       await processLoadedPosts(response.docs);
     }
     catch(error) {
-      console.log("error happened")
-      setMessage("Error loading posts", error);
+      setMessage("Error loading posts" + error);
+    }
+    finally {
+      setLoading(false);
+    }
+  }
+
+  async function loadMorePosts() {
+    setLoading(true);
+    try {
+      const q = query(collection(getFirestore(), "posts"), orderBy("timestamp", "desc"), limit(7), startAfter(stopPoint));
+      const response = await getDocs(q);
+      const lastDisplayedDoc = response.docs[response.docs.length - 1];
+      if (!lastDisplayedDoc) setMessage("End of posts");
+      setStopPoint(lastDisplayedDoc);
+      await processLoadedPosts(response.docs);
+    }
+    catch(error) {
+      setMessage("Error loading posts" + error);
     }
     finally {
       setLoading(false);
@@ -61,6 +77,7 @@ export function Feed() {
   }
 
   useEffect(() => { 
+    firstLoad();
     window.addEventListener("scroll", updateDistance);
     return () => window.removeEventListener("scroll", updateDistance);
   }, []);

@@ -9,7 +9,6 @@ export const StyledPostPage = styled.div`
   }
 
   .loading-spinner {
-    display: block;
     margin: 100px auto;
   }
 `

@@ -32,6 +32,7 @@ export const StyledUserPost = styled.div`
     right: 0;
     cursor: pointer;
     border: none;
+    border-radius: 8px;
     padding: 4px;
     background-color: inherit;
     font-size: 20px;
@@ -58,8 +59,9 @@ export const StyledUserPost = styled.div`
   }
 
   img.post-image {
-    object-fit: cover;
+    object-fit: contain;
     width: 100%;
+    max-height: 70vh;
   }
 
   div.like-and-comment-buttons {
@@ -213,14 +215,14 @@ export const StyledUserPostFullView = styled(StyledUserPost)`
 
   .separator-line {
     height: 1px;
-    background-color: grey;
+    background-color: darkgrey;
     margin-bottom: 8px;
   }
 
   img.post-image {
     margin: 0;
     max-width: 600px;
-    object-fit: stretch;
+    align-self: center;
   }
 
   #right-part {
@@ -228,6 +230,7 @@ export const StyledUserPostFullView = styled(StyledUserPost)`
     flex: 1 1 300px;
     display: flex;
     flex-direction: column;
+    border-left: 1px solid darkgrey;
   }
 
   #right-part > *:not(.separator-line, form.make-new-comment, button.delete-post) {

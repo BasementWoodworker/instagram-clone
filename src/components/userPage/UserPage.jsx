@@ -43,7 +43,7 @@ export function UserPage() {
           uid: userId,
           followers: userFollowers
         })
-        setUserPosts(userInfoObject.posts);
+        setUserPosts(userInfoObject.posts.reverse());
       })
       .finally(() => setLoading(false))
     })

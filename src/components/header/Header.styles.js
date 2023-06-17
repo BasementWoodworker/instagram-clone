@@ -10,6 +10,7 @@ export const StyledHeader = styled.header`
   justify-content: space-around;
   align-items: center;
   border-bottom: 1px solid lightgrey;
+  background-color: white;
 
   .logo {
     font-size: 40px;

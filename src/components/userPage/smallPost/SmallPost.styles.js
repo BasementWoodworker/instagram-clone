@@ -7,10 +7,13 @@ import commentIcon from "../../../assets/icons/comment-full.svg";
 export const StyledSmallPost = styled(Link)`
   position: relative;
   cursor: pointer;
+  max-height: 300px;
 
   img {
     width: 100%;
     height: 100%;
+    object-fit: cover;
+    background-color: white; // to make "filter: brightness(50%)"" work
   }
 
   &:hover > img {
