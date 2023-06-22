@@ -4,13 +4,24 @@ import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 import { StyledFeed } from "./Feed.styles";
 import { UserPost } from "../userPost/UserPost";
+import { UserPostModal } from "../userPostModal/UserPostModal";
 import { LoadingSpinner } from "../loadingSpinner/LoadingSpinner";
+
+function useStateThatIsUpToDateInEventHandlers(initialState) {
+  const [state, setState] = useState(initialState);
+  const stateRef = useRef(state);
+  function setStateModified(newState) {
+    stateRef.current = newState;
+    setState(newState)
+  }
+  return [state, setStateModified, stateRef];
+}
 
 export function Feed() {
   const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [stopPoint, setStopPoint] = useState(null);
-  const [distanceFromBottom, setDistanceFromBottom] = useState(0);
+  const [displayedPost, setDisplayedPost] = useState(null);
+  const [loading, setLoading, loadingRefedValue] = useStateThatIsUpToDateInEventHandlers(true);
+  const stopPoint = useRef(null);
   const [message, setMessage] = useState("");
   const feedRef = useRef();
 
@@ -20,7 +31,7 @@ export function Feed() {
       const response = await getDocs(firstQ);
       const lastDisplayedDoc = response.docs[response.docs.length - 1];
       if (!lastDisplayedDoc) setMessage("End of posts");
-      setStopPoint(lastDisplayedDoc);
+      stopPoint.current = lastDisplayedDoc;
       await processLoadedPosts(response.docs);
     }
     catch(error) {
@@ -34,11 +45,11 @@ export function Feed() {
   async function loadMorePosts() {
     setLoading(true);
     try {
-      const q = query(collection(getFirestore(), "posts"), orderBy("timestamp", "desc"), limit(7), startAfter(stopPoint));
+      const q = query(collection(getFirestore(), "posts"), orderBy("timestamp", "desc"), limit(7), startAfter(stopPoint.current));
       const response = await getDocs(q);
       const lastDisplayedDoc = response.docs[response.docs.length - 1];
       if (!lastDisplayedDoc) setMessage("End of posts");
-      setStopPoint(lastDisplayedDoc);
+      stopPoint.current = lastDisplayedDoc;
       await processLoadedPosts(response.docs);
     }
     catch(error) {
@@ -72,25 +83,22 @@ export function Feed() {
     setPosts(prev => prev.concat(processedResponse));
   }
 
-  function removePostFromArray(postId) {
+  function removePostFromFeed(postId) {
     setPosts(posts.filter(post => post.id !== postId));
+  }
+
+  function checkDistance() {
+    const distanceFromBottom = feedRef.current.getBoundingClientRect().bottom;
+    if (distanceFromBottom < 2000 && !loadingRefedValue.current && stopPoint.current !== undefined) {
+      loadMorePosts()
+    }
   }
 
   useEffect(() => { 
     firstLoad();
-    window.addEventListener("scroll", updateDistance);
-    return () => window.removeEventListener("scroll", updateDistance);
+    window.addEventListener("scroll", checkDistance);
+    return () => window.removeEventListener("scroll", checkDistance);
   }, []);
-
-  useEffect(() => {
-    if (distanceFromBottom < 2000 && !loading && stopPoint !== undefined) {
-      loadMorePosts()
-    }
-  }, [distanceFromBottom])
-
-  function updateDistance() {
-    setDistanceFromBottom(feedRef.current.getBoundingClientRect().bottom);
-  }
 
   return(
     <StyledFeed ref={feedRef}>
@@ -107,11 +115,13 @@ export function Feed() {
             text={post.text}
             avatar={post.avatar}
             initialLikes={post.likes}
-            removePostFromArray={removePostFromArray}
+            removePostFromFeed={removePostFromFeed}
+            setDisplayedPost={setDisplayedPost}
           />
       })}
       {loading && <LoadingSpinner size="150px" type="2" />}
       <div className="message">{message}</div>
+      {displayedPost && <UserPostModal postInfo={displayedPost} closeModal={() => setDisplayedPost(null)} />}
     </StyledFeed>
   )
 }

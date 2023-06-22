@@ -4,13 +4,20 @@ import addPostIcon from "../../assets/icons/add-post.svg";
 import settingsIcon from "../../assets/icons/settings.svg";
 import homeIcon from "../../assets/icons/home.svg";
 
+const headerHeight = "65px";
+
 export const StyledHeader = styled.header`
-  flex: 0 0 65px;
+  flex: 0 0 ${headerHeight};
   display: flex;
   justify-content: space-around;
   align-items: center;
   border-bottom: 1px solid lightgrey;
   background-color: white;
+  transition: 0.1s;
+
+  &.hidden {
+    top: ${"-" + headerHeight}
+  }
 
   .logo {
     font-size: 40px;
@@ -26,6 +33,8 @@ export const StyledHeader = styled.header`
 
   nav > * {
     cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: center;
   }
 
   .home {
@@ -79,5 +88,25 @@ export const StyledHeader = styled.header`
     font-size: 24px;
     font-weight: bold;
     margin-left: 8px;
+  }
+
+  @media (max-width: 600px) {
+    flex-basis: 55px;
+
+    .logo {
+      font-size: 30px;
+    }
+
+    .home,
+    .add-post,
+    .settings {
+      display: none;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .your-info > .username {
+      display: none;
+    }
   }
 `

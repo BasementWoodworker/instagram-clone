@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getAuth, signOut } from "firebase/auth";
@@ -9,11 +9,22 @@ import { noHeaderAndFooterPaths } from "../../noHeaderAndFooterPaths";
 import { selectUser } from "../../redux/features/user/userSlice";
 
 export function Header() {
+  const [hidden, setHidden] = useState(false);
+  const scrollPosition = useRef(0);
   const navigate = useNavigate();
   const location = useLocation().pathname;
   const you = useSelector(selectUser);
 
-  if (noHeaderAndFooterPaths.includes(location)) return null;
+  useEffect(() => {
+    function hideOnScroll() {
+      const newScrollPosition = window.scrollY
+      if (scrollPosition.current < newScrollPosition) setHidden(true)
+      else setHidden(false)
+      scrollPosition.current = newScrollPosition;
+    }
+    window.addEventListener("scroll", hideOnScroll);
+    return () => window.removeEventListener("scroll", hideOnScroll);
+  })
 
   function handleLogOut() {
     navigate("/login");
@@ -27,13 +38,15 @@ export function Header() {
       })
   }
 
+  if (noHeaderAndFooterPaths.includes(location)) return null;
+
   return(
-    <StyledHeader>
-      <Link to="/" className="logo">Fake Instagram</Link>
+    <StyledHeader className={hidden ? "hidden" : ""}>
+      <Link to="/" className="logo">Fakestagram</Link>
       <nav>
-        <Link to="/feed" className="home" title="Feed"></Link>
-        <Link to="/make-new-post" className="add-post" title="Make post"></Link>
-        <Link to="/settings" className="settings" title="Settings"></Link>
+        <a href="/feed" className="home" title="Feed"></a>
+        <a href="/make-new-post" className="add-post" title="Make post"></a>
+        <a href="/settings" className="settings" title="Settings"></a>
         <button className="log-out" title="Log Out" onClick={handleLogOut}></button>
         <Link to={`user/${you && you.username}`} className="your-info" title="Your profile">
           <img src={you && you.photoURL} />

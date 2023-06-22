@@ -48,12 +48,12 @@ export function PostPage() {
         view="full"
         key={postId}
         postId={postId}
+        avatar={postInfo.avatar}
         username={postInfo.username}
         image={postInfo.image}
         text={postInfo.text}
-        avatar={postInfo.avatar}
         initialLikes={postInfo.likes}
-        removePostFromArray={() => {}}
+        removePostFromFeed={() => {}}
       />
     </StyledPostPage>
   )

@@ -1,13 +1,12 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 
 import likeIcon from "../../../assets/icons/liked.svg";
 import commentIcon from "../../../assets/icons/comment-full.svg";
 
-export const StyledSmallPost = styled(Link)`
+export const StyledSmallPost = styled.div`
   position: relative;
   cursor: pointer;
-  max-height: 300px;
+  aspect-ratio: 1;
 
   img {
     width: 100%;
@@ -61,5 +60,21 @@ export const StyledSmallPost = styled(Link)`
   .comment-icon {
     mask: url(${commentIcon}) no-repeat center;
     mask-size: contain;
+  }
+
+  @media (max-width: 600px) {
+    .like-and-comment-count {
+      gap: 10px;
+    }
+
+    .like-and-comment-count > * {
+      gap: 3px;
+    }
+
+    .like-icon,
+    .comment-icon {
+      height: 20px;
+      width: 20px;
+    }
   }
 `

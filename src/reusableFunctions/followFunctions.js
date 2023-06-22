@@ -25,9 +25,9 @@ export async function followUser(yourId, followedUserId) {
   }))
 }
 
-export async function unFollowUser(yourId, unfollowedUserId) {
+export async function unFollowUser(yourId, unfollowedUserId, skipFirstStep) {
   const firestore = getFirestore();
-  await deleteDoc(doc(firestore, "users", unfollowedUserId, "followers", yourId));
+  if (!skipFirstStep) await deleteDoc(doc(firestore, "users", unfollowedUserId, "followers", yourId));
   await updateDoc(doc(firestore, "users", yourId), {
     following: arrayRemove(unfollowedUserId)
   })

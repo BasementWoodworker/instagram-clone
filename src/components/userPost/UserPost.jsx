@@ -14,13 +14,14 @@ import {
 } from "firebase/firestore";
 
 import { StyledUserPost, StyledUserPostFullView } from "./UserPost.styles";
-import { selectUser } from "../../redux/features/user/userSlice";
+import { TopBar } from "./topBar/TopBar";
 import { Comments } from "./comments/Comments";
 import { MakeNewComment } from "./comments/MakeNewComment";
 import { AreYouSure } from "../areYouSure/areYouSure";
 import { deletePostFromDatabase } from "../../reusableFunctions/deletePostFromDatabase";
+import { selectUser } from "../../redux/features/user/userSlice";
 
-export function UserPost({ view, postId, avatar, username, image, text, initialLikes, placeholder, removePostFromArray }) {
+export function UserPost({ view, postId, avatar, username, image, text, initialLikes, placeholder, removePostFromFeed, setDisplayedPost, setOriginalDisplayedComments, showCloseButton }) {
   if (placeholder) return <StyledUserPost className="placeholder" />
 
   const user = useSelector(selectUser);
@@ -32,6 +33,21 @@ export function UserPost({ view, postId, avatar, username, image, text, initialL
   const [showCommentInput, setShowCommentInput] = useState(false);
   const commentInputRef = useRef();
   const postRef = useRef();
+
+  function openBiggerView(e) {
+    e.preventDefault();
+    setDisplayedPost({
+      view: "full",
+      postId,
+      avatar,
+      username,
+      image,
+      text,
+      initialLikes,
+      removePostFromFeed,
+      setOriginalDisplayedComments: setDisplayedComments
+    })
+  }
 
   async function handleLike() {
     setLikeButtonDisabled(true);
@@ -63,7 +79,10 @@ export function UserPost({ view, postId, avatar, username, image, text, initialL
       { includeMetadataChanges: true },
       (doc) => {
         if (doc.metadata.hasPendingWrites || !doc.data()) return;
-        setAllLikes(doc.data().likes);
+        const newLikes = doc.data().likes;
+        setAllLikes(newLikes);
+        if (newLikes.includes(user.uid)) setLiked(true)
+        else setLiked(false)
       }
     )
     return unsubscribe;
@@ -71,7 +90,8 @@ export function UserPost({ view, postId, avatar, username, image, text, initialL
 
   async function deletePost() {
     await deletePostFromDatabase(postId, user.uid);
-    removePostFromArray(postId);
+    removePostFromFeed(postId);
+    if (view === "full") window.history.back();
   }
 
   async function makeNewComment() {
@@ -85,8 +105,12 @@ export function UserPost({ view, postId, avatar, username, image, text, initialL
       username: user.username,
       id: response.id,
     }
-    if (view === "in-feed") setDisplayedComments(prev => [newComment].concat(prev))
-    else if (view === "full") setDisplayedComments(prev => prev.concat([newComment]))
+    if (view === "in-feed") {
+      setDisplayedComments(prev => [newComment].concat(prev))
+    } else if (view === "full") {
+      setDisplayedComments(prev => prev.concat([newComment]))
+      if (setOriginalDisplayedComments) setOriginalDisplayedComments(prev => [newComment].concat(prev)) // Update comments in feed post
+    }
   }
 
   useEffect(() => {
@@ -96,18 +120,15 @@ export function UserPost({ view, postId, avatar, username, image, text, initialL
   }, [displayedComments])
 
   useEffect(() => {
-    if (commentInputRef.current) {
+    if (commentInputRef.current && showCommentInput) {
       commentInputRef.current.focus()
     }
   }, [showCommentInput])
  
   if (view === "in-feed") return(
     <StyledUserPost className={liked ? "liked" : ""} ref={postRef}>
-      <Link className="author-info" to={`/user/${username}`}>
-        <img className="avatar" src={avatar} />
-        <div className="username" >{username}</div>
-      </Link>
-      <Link className="post-image-container" to={`/post/${postId}`}>
+      <TopBar username={username} avatar={avatar} setShowDeletionModal={setShowDeletionModal} showDeleteButton={username === user.username} />
+      <Link className="post-image-container" onClick={openBiggerView} to={"/post/" + postId}>
         <img className="post-image" src={image} />
       </Link>
       <div className="like-and-comment-buttons">
@@ -117,18 +138,15 @@ export function UserPost({ view, postId, avatar, username, image, text, initialL
       <div id="like-amount">{allLikes.length + " " + (allLikes.length === 1 ? "like" : "likes")}</div>
       <Comments view={view} postId={postId} author={username} authorComment={text} displayedComments={displayedComments} setDisplayedComments={setDisplayedComments} />
       {showCommentInput && <MakeNewComment makeNewComment={makeNewComment} commentInputRef={commentInputRef} setDisplayedComments={setDisplayedComments} />}
-      {username === user.username && <button className="delete-post" onClick={() => setShowDeletionModal(true)}>✖</button>}
       {showDeletionModal && <AreYouSure text="Your post will be deleted" action={deletePost} hide={() => setShowDeletionModal(false)} />}
     </StyledUserPost>
   )
   else if (view === "full") return(
-    <StyledUserPostFullView className={liked ? "liked" : ""} ref={postRef}>
-      <img className="post-image" src={image} />
+    <StyledUserPostFullView className={liked ? "liked" : ""} ref={postRef} onClick={(e) => e.stopPropagation()}>
+      <TopBar mobile="true" username={username} avatar={avatar} setShowDeletionModal={setShowDeletionModal} showDeleteButton={username === user.username} showCloseButton={showCloseButton} />
+      <img className="post-image" src={image} href={image} onClick={() => window.open(image)} />
       <div id="right-part">
-        <Link className="author-info" to={`/user/${username}`}>
-          <img className="avatar" src={avatar} />
-          <div className="username" >{username}</div>
-        </Link>
+      <TopBar username={username} avatar={avatar} setShowDeletionModal={setShowDeletionModal} showDeleteButton={username === user.username} showCloseButton={showCloseButton} />
         <div className="separator-line"></div>
         <div className="like-and-comment-buttons">
           <button className="like" onClick={handleLike} disabled={likeButtonDisabled}></button>
@@ -137,8 +155,7 @@ export function UserPost({ view, postId, avatar, username, image, text, initialL
         <div id="like-amount">{allLikes.length + " " + (allLikes.length === 1 ? "like" : "likes")}</div>
         <Comments view={view} postId={postId} author={username} authorComment={text} displayedComments={displayedComments} setDisplayedComments={setDisplayedComments} />
         <MakeNewComment makeNewComment={makeNewComment} commentInputRef={commentInputRef} />
-        {username === user.username && <button className="delete-post" onClick={() => setShowDeletionModal(true)}>✖</button>}
-        {showDeletionModal && <AreYouSure text="Your post will be deleted" action={deletePost} hide={() => setShowDeletionModal(false)} />}
+        {showDeletionModal && <AreYouSure className="deletion-modal" text="Your post will be deleted" action={deletePost} hide={() => setShowDeletionModal(false)} />}
       </div>
     </StyledUserPostFullView>
   )

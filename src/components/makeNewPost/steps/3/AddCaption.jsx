@@ -8,7 +8,10 @@ export function AddCaption({ croppedImage, setCaption, submitPost }) {
   const you = useSelector(selectUser);
 
   function submitOnEnter(e) {
-    if (e.key === "Enter") submitPost()
+    if (e.key === "Enter") {
+      e.preventDefault();
+      submitPost();
+    }
   }
 
   return(

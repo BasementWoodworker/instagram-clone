@@ -30,4 +30,13 @@ export const StyledUserPreviewLink = styled(Link)`
   .full-name {
     color: dimgrey;
   }
+
+  button.remove {
+    color: white;
+    background-color: ${props => props.theme.darkblue};
+    border: none;
+    border-radius: 4px;
+    padding: 4px;
+    margin-right: 4px;
+  }
 `

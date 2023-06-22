@@ -34,7 +34,7 @@ export const StyledReauthentication = styled.div`
   }
 
   label > div {
-    color: #5b76a0;
+    color: ${props => props.theme.darkblue};
     font-size: 18px;
     margin-bottom: 8px;
   }

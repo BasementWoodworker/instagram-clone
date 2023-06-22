@@ -10,6 +10,7 @@ import { selectUser} from "../../redux/features/user/userSlice";
 import { requestUserInfo } from "../../reusableFunctions/requestUserInfo";
 import { getUserAvatar } from "../../reusableFunctions/getUserAvatar";
 import { SmallPost } from "./smallPost/SmallPost";
+import { UserPostModal } from "../userPostModal/UserPostModal";
 import { followUser, unFollowUser, getUserFollowers } from "../../reusableFunctions/followFunctions";
 
 async function getUserId(username) {
@@ -22,6 +23,7 @@ export function UserPage() {
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
   const [userPosts, setUserPosts] = useState([]);
+  const [openedPost, setOpenedPost] = useState(null);
   const [displayedContent, setDisplayedContent] = useState("posts");
   const followButtonRef = useRef();
   const location = useLocation();
@@ -29,6 +31,7 @@ export function UserPage() {
   const you = useSelector(selectUser);
   
   useEffect(() => {
+    console.log("location changed", location);
     setUserInfo(null);
     setDisplayedContent("posts");
     setLoading(true);
@@ -70,6 +73,15 @@ export function UserPage() {
     }
   }
 
+  function modifyInfoAfterRemovingDeletedUserFromFollowings(removedId) {
+    setUserInfo(info => {
+      return {
+        ...info,
+        following: info.following.filter(elem => elem !== removedId)
+      }
+    })
+  }
+
   if (loading) return(
     <StyledUserPage>
       <LoadingSpinner size="200px" type={2} />
@@ -82,12 +94,16 @@ export function UserPage() {
     </StyledUserPage>
   );
 
+  const followers = userInfo.followers.map(uid => <UserPreview uid={uid} key={uid} />);
+  const following = userInfo.following.map(uid => <UserPreview uid={uid} key={uid} isOnYourPage={you.uid === userInfo.uid} yourId={you.uid} modifyInfoAfterRemovingDeletedUserFromFollowings={modifyInfoAfterRemovingDeletedUserFromFollowings} />);
+
   return(
     <StyledUserPage>
       <div className="user-info">
         <img className="avatar" src={userInfo.avatarURL} />
         <div>
           <h2 className="username">{userInfo.username}</h2>
+          <div className="full-name">{userInfo.fullName}</div>
           {you && you.uid !== userInfo.uid && 
             <button className="follow" onClick={handleFollowing} ref={followButtonRef}>
               {you.following.includes(userInfo.uid) ? "Unfollow" : "Follow"}
@@ -109,17 +125,19 @@ export function UserPage() {
           <div>{userInfo.description}</div>
         </div>
       </div>
-      <div className="separator-line"></div>
+      <div className="separator-line-profile"></div>
       {displayedContent === "posts" ? 
         <div className="posts">
-          {userPosts.map(id => <SmallPost key={id} postId={id} userId={userInfo.uid} />)}
+          {userPosts.map(id => <SmallPost key={id} postId={id} userId={userInfo.uid} setOpenedPost={setOpenedPost} />)}
         </div> :
         <div className="users">
           {displayedContent === "followers" ? 
-            userInfo.followers.map(uid => <UserPreview uid={uid} key={uid} />):
-            userInfo.following.map(uid => <UserPreview uid={uid} key={uid} />)}
+            (followers.length !== 0 ? followers : <div className="no-followers">No followers</div>)  :
+            (following.length !== 0 ? following : <div className="no-following">Not following anyone</div>)
+          }
         </div>
       }
+      {openedPost && <UserPostModal postInfo={openedPost} closeModal={() => setOpenedPost(null)} avatar={userInfo.avatarURL} username={username} />}
     </StyledUserPage>
   )
 }

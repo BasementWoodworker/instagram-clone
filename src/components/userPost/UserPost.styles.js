@@ -2,40 +2,34 @@ import styled from "styled-components";
 import likeIcon from "../../assets/icons/like.svg";
 import likedIcon from "../../assets/icons/liked.svg";
 import commentIcon from "../../assets/icons/comment.svg";
+import ellipsisIcon from "../../assets/icons/ellipsis.svg";
+import closeIcon from "../../assets/icons/close.svg";
 
-const darkblue = "#285e91";
 const scrollbarThumbColor = "#333333";
 const scrollbarTrackColor = "#eeeeee";
-
 
 export const StyledUserPost = styled.div`
   position: relative;
   height: min-content;
-  width: 400px;
+  max-width: 600px;
   background-color: white;
-  border: 1.5px solid darkgrey;
+  border: 1.5px solid ${props => props.theme.borderColor};
   border-radius: 8px;
-  margin: 40px auto;
+  margin: 40px 20px;
 
   &.placeholder {
     background-color: white;
     min-height: 400px;
   }
 
-  & > *:not(.post-image-container, form.make-new-comment, button.delete-post) {
+  & > *:not(.post-image-container, form.make-new-comment, button.delete-post, .modal) {
     margin: 8px;
   }
 
-  button.delete-post {
-    position: absolute;
-    top: 0;
-    right: 0;
-    cursor: pointer;
-    border: none;
-    border-radius: 8px;
-    padding: 4px;
-    background-color: inherit;
-    font-size: 20px;
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   .author-info {
@@ -58,7 +52,46 @@ export const StyledUserPost = styled.div`
     font-size: 18px;
   }
 
+  .top-bar > .buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .top-bar > .buttons > * {
+    cursor: pointer
+  }
+
+  .top-bar .dropdown {
+    position: relative;
+    height: 20px;
+    width: 20px;
+    margin-right: 8px;
+    border-radius: 8px;
+    background-image: url(${ellipsisIcon});
+    background-size: 100%;
+    background-color: inherit;
+  }
+
+  button.delete-post {
+    position: absolute;
+    top: 20px;
+    right: 0;
+    white-space: nowrap;
+    padding: 4px;
+  }
+
+  button.close-post {
+    border: none;
+    height: 50px;
+    width: 50px;
+    background-color: inherit;
+    background-image: url(${closeIcon});
+    background-size: 100%;
+  }
+
   img.post-image {
+    cursor: pointer;
     object-fit: contain;
     width: 100%;
     max-height: 70vh;
@@ -175,7 +208,7 @@ export const StyledUserPost = styled.div`
 
   form.make-new-comment {
     display: flex;
-    border-top: 1.5px solid darkgrey;
+    border-top: 1.5px solid ${props => props.theme.borderColor};
   }
 
   form.make-new-comment > * {
@@ -191,7 +224,7 @@ export const StyledUserPost = styled.div`
   }
 
   form.make-new-comment > button[type="submit"] {
-    color: ${darkblue};
+    color: ${props => props.theme.darkblue};
     font-weight: bold;
     padding: 20px;
     background-color: inherit;
@@ -203,25 +236,38 @@ export const StyledUserPost = styled.div`
     color: grey;
     cursor: default;
   }
+
+  @media (max-width: 600px) {
+    width: 100%;
+    margin: 20px 0;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+  }
 `
 
 export const StyledUserPostFullView = styled(StyledUserPost)`
   display: flex;
   width: auto;
   max-width: 1000px;
-  height: 85%;
-  max-height: 85%;
+  min-height: 100%;
   border-radius: 0;
+  margin: 0 auto;
 
   .separator-line {
     height: 1px;
-    background-color: darkgrey;
+    background-color: ${props => props.theme.borderColor};
     margin-bottom: 8px;
   }
 
+  .top-bar.mobile {
+    display: none;
+  }
+
   img.post-image {
-    margin: 0;
+    min-width: 0;
     max-width: 600px;
+    margin: 0;
     align-self: center;
   }
 
@@ -230,24 +276,43 @@ export const StyledUserPostFullView = styled(StyledUserPost)`
     flex: 1 1 300px;
     display: flex;
     flex-direction: column;
-    border-left: 1px solid darkgrey;
+    border-left: 1px solid ${props => props.theme.borderColor};
   }
 
-  #right-part > *:not(.separator-line, form.make-new-comment, button.delete-post) {
+  #right-part > *:not(.separator-line, form.make-new-comment, button.delete-post, .modal) {
     margin: 0 15px;
   }
 
-  #right-part > .author-info {
+  #right-part > .top-bar {
     padding: 15px 0;
   }
 
   #right-part > .comments {
-    flex: 1 1 0;
+    flex: 1 1 auto;
     max-height: 100%;
   }
 
   #right-part > form.make-new-comment > input {
     width: auto;
     border-radius: 0;
+  }
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    min-height: 100%;
+    margin:0;
+
+    .top-bar {
+      display: none;
+    }
+
+    .top-bar.mobile {
+      display: flex;
+    }
+
+    #right-part {
+      flex: 1 1 auto;
+      border: none;
+    }
   }
 `

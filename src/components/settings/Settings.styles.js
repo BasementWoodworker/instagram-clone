@@ -6,11 +6,11 @@ export const StyledSettings = styled.div`
   width: 70%;
   margin: 100px auto;
   background-color: white;
-  border: 1px solid lightgrey;
+  border: 1px solid ${props => props.theme.borderColor};
   border-radius: ${borderRadius};
 
   .setting-selection {
-    border-right: 1.5px solid lightgrey;
+    border-right: 1.5px solid ${props => props.theme.borderColor};
     display: flex;
     flex-direction: column;
   }
@@ -18,7 +18,7 @@ export const StyledSettings = styled.div`
   .setting-selection > * {
     flex-grow: 1;
     font-size: 24px;
-    border-bottom: 1px solid lightgrey;
+    border-bottom: 1px solid ${props => props.theme.borderColor};
     padding: 20px 12px;
     cursor: pointer;
   }
@@ -37,7 +37,7 @@ export const StyledSettings = styled.div`
   }
 
   .setting-selection > .selected {
-    color: #5b76a0;
+    color: ${props => props.theme.darkblue};
     background-color: #eeeeee;
   }
 
@@ -46,6 +46,7 @@ export const StyledSettings = styled.div`
     flex-direction: column;
     margin: auto;
     padding: 15px;
+    max-width: 100%;
   }
 
   form.setting > * {
@@ -62,7 +63,7 @@ export const StyledSettings = styled.div`
   }
   
   form.setting > h2.setting-type {
-    color: #50668d;
+    color: ${props => props.theme.darkblue};
     font-size: 32px;
     margin-bottom: 8px;
   }
@@ -90,7 +91,7 @@ export const StyledSettings = styled.div`
     padding: 4px 10px;
     font-size: 18px;
     color: white;
-    background-color: #5b76a0;
+    background-color: ${props => props.theme.darkblue};
     border: none;
     border-radius: 4px;
   }
@@ -113,5 +114,37 @@ export const StyledSettings = styled.div`
 
   .loading-spinner {
     align-self: center;
+  }
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    margin: 5px 0;
+    width: 100%;
+
+    h2.setting-type {
+      text-align: center;
+    }
+    
+    .setting-selection {
+      border-right: 0;
+    }
+
+    .setting-selection > *:first-child {
+      border-top-right-radius: ${borderRadius};
+    }
+
+    .setting-selection > *:last-child {
+      border-bottom: 1.5px solid ${props => props.theme.borderColor};
+      border-bottom-left-radius: 0;
+    }
+
+    form.setting {
+      width: 100%;
+      box-shadow: inset 0 0 10px 5px gainsboro;
+    }
+  }
+
+  @media (max-height: 550px) {
+    margin: 0 auto;
   }
 `

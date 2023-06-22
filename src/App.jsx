@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
+import { ThemeProvider } from "styled-components";
 import { useDispatch } from "react-redux";
 import { initializeApp } from "firebase/app";
 import { getFirebaseConfig } from "../firebase.config";
@@ -20,6 +21,11 @@ import { PostPage } from "./components/postPage/PostPage";
 import { requestUserInfo } from "./reusableFunctions/requestUserInfo";
 
 const firebaseApp = initializeApp(getFirebaseConfig());
+
+const theme = {
+  darkblue: "#285e91",
+  borderColor: "darkgrey"
+}
 
 export function App() {
   const dispatch = useDispatch();
@@ -48,21 +54,23 @@ export function App() {
 
   return (
     <>
-      <GlobalStyles />
-      <Header />
-      <main>
-        <Routes>
-          <Route path="/" element={<RootPathRedirect />} />
-          <Route path="/login" element={<EntryPage />} />
-          <Route path="/register" element={<EntryPage />} />
-          <Route path="/feed" element={<Feed />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/make-new-post" element={<MakeNewPost />} />
-          <Route path="/user/:username" element={<UserPage />} />
-          <Route path="/post/:postId" element={<PostPage />} />
-        </Routes>
-      </main>
-      <Footer />
+      <ThemeProvider theme={theme}>
+        <GlobalStyles />
+        <Header />
+        <main>
+          <Routes>
+            <Route path="/" element={<RootPathRedirect />} />
+            <Route path="/login" element={<EntryPage />} />
+            <Route path="/register" element={<EntryPage />} />
+            <Route path="/feed" element={<Feed />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/make-new-post" element={<MakeNewPost />} />
+            <Route path="/user/:username" element={<UserPage />} />
+            <Route path="/post/:postId" element={<PostPage />} />
+          </Routes>
+        </main>
+        <Footer />
+      </ThemeProvider>
     </>
   )
 }

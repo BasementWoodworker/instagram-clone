@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
 import { StyledSettings } from "./Settings.styles";
 import { ChangeInfo } from "./changeInfo/ChangeInfo";
@@ -8,15 +8,15 @@ import { DeleteAccount } from "./deleteAccount/DeleteAccount";
 
 export function Settings() {
   const [currentSetting, setCurrentSetting] = useState("ChangeInfo");
+  const settingRef = useRef();
   const settingsForm = 
     currentSetting === "ChangeInfo" ? <ChangeInfo /> :
     currentSetting === "ChangeEmail" ? <ChangeEmail /> :
     currentSetting === "ChangePassword" ? <ChangePassword /> :
-    currentSetting === "DeleteAccount" ? <DeleteAccount /> :
-    null;
+    currentSetting === "DeleteAccount" ? <DeleteAccount /> : null;
 
   return(
-    <StyledSettings>
+    <StyledSettings ref={settingRef}>
       <div className="setting-selection">
         <div onClick={() => setCurrentSetting("ChangeInfo")} className={currentSetting === "ChangeInfo" ? "selected" : ""}>Personal Information</div>
         <div onClick={() => setCurrentSetting("ChangeEmail")} className={currentSetting === "ChangeEmail" ? "selected" : ""}>Email</div>

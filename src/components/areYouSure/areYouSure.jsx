@@ -20,7 +20,7 @@ export function AreYouSure({ text, action, hide }) {
   }
 
   return(
-    <StyledAreYouSure onMouseDown={hide}>
+    <StyledAreYouSure onMouseDown={hide} className="modal">
       <div className="container" onMouseDown={(e) => e.stopPropagation()}>
         <div className="text">
           <h2>Are you sure?</h2>

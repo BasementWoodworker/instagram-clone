@@ -12,4 +12,11 @@ export const StyledDeleteAccount = styled.form`
     font-size: 32px;
     padding: 10px 30px;
   }
+
+  @media (max-width: 600px) {
+    button.delete-account {
+      font-size: 24px;
+      padding: 10px 20px;
+    }
+  }
 `

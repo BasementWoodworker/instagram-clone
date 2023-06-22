@@ -13,7 +13,7 @@ export const StyledAddCaption = styled.div`
     max-width: 100%;
     margin-top: 10px;
     background-color: white;
-    border: 1.5px solid darkgrey;
+    border: 1.5px solid ${props => props.theme.borderColor};
     border-radius: 4px;
   }
 
@@ -25,14 +25,14 @@ export const StyledAddCaption = styled.div`
     padding: 15px;
     font-size: 24px;
     font-weight: bold;
-    border-bottom: 1.5px solid darkgrey;
+    border-bottom: 1.5px solid ${props => props.theme.borderColor};
   }
 
   .your-info > img.avatar {
     height: 45px;
     width: 45px;
     border-radius: 50%;
-    border: 1.5px solid darkgrey;
+    border: 1.5px solid #333333;
   }
 
   .cropped-image {
@@ -46,6 +46,8 @@ export const StyledAddCaption = styled.div`
     min-height: 50px;
     padding: 8px;
     border: none;
-    border-top: 1.5px solid darkgrey;
+    border-top: 1.5px solid ${props => props.theme.borderColor};
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
   }
 `

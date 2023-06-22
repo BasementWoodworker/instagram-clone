@@ -1,34 +1,35 @@
 import styled from "styled-components";
 
-import uploadIcon from "../../../../assets/icons/upload-image.svg";
-
 export const StyledUploadImage = styled.label`
   position: relative;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
-  height: 400px;
-  width: 400px;
-  max-width: 100%;
-  margin: 100px auto;
+  height: min(100%, 500px);
+  width: min(100%, 500px);
   box-shadow: 0 0 12px lightgrey;
   background-color: white;
-  background-image: url(${uploadIcon});
-  background-size: 50%;
-  background-repeat: no-repeat;
-  background-position: center;
+  margin-top: 50px;
 
   input[type="file"] {
     height: 100%;
     width: 100%;
-    visibility: hidden;
+    display: none;
   }
 
-  span {
-    position: absolute;
-    bottom: 70px;
-    left: 50%;
-    transform: translate(-50%);
+  .upload-icon {
+    max-width: 50%;
+  }
+
+  .text {
     font-size: 24px;
-    white-space: nowrap;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  @media (max-height: 400px) {
+    margin: 0;
   }
 `

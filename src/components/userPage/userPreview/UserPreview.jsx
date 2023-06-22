@@ -3,8 +3,9 @@ import React, { useState, useEffect } from "react";
 import { StyledUserPreviewLink } from "./UserPreview.styles";
 import { requestUserInfo } from "../../../reusableFunctions/requestUserInfo";
 import { getUserAvatar } from "../../../reusableFunctions/getUserAvatar";
+import { unFollowUser } from "../../../reusableFunctions/followFunctions";
 
-export function UserPreview({ uid }) {
+export function UserPreview({ uid, isOnYourPage, yourId, modifyInfoAfterRemovingDeletedUserFromFollowings }) {
   const [userInfo, setUserInfo] = useState(null);
 
   useEffect(() => {
@@ -19,6 +20,12 @@ export function UserPreview({ uid }) {
     })
   }, [])
 
+  async function removeDeletedUser(e) {
+    e.preventDefault();
+    await unFollowUser(yourId, uid, true);
+    modifyInfoAfterRemovingDeletedUserFromFollowings(uid);
+  }
+
   if (!userInfo) return null;
 
   return(
@@ -28,6 +35,7 @@ export function UserPreview({ uid }) {
         <div className="username">@{userInfo.username ?? "Deleted account"}</div>
         <div className="full-name">{userInfo.fullName}</div>
       </div>
+      {(!userInfo.username && isOnYourPage) && <button className="remove" onClick={removeDeletedUser}>Remove</button>}
     </StyledUserPreviewLink>
   )
 }

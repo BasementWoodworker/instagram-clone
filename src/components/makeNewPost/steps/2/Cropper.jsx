@@ -7,7 +7,7 @@ export function Cropper({ selectedImage, setCroppedImage, setCropFunction }) {
   const [imgWidth, setImgWidth] = useState(0);
   const canvasRef = useRef();
   const rawImageRef = useRef();
-  const cropSquareRef = useRef();
+  const cropSquareRef = useRef("Initial");
   const rawImageURL = URL.createObjectURL(selectedImage);
   let currentCursorX = 0;
   let currentCursorY = 0;
@@ -41,24 +41,31 @@ export function Cropper({ selectedImage, setCroppedImage, setCropFunction }) {
   }
 
   function startDrag(e) {
-    e.preventDefault();
+    e.stopPropagation();
     currentCursorX = e.clientX;
     currentCursorY = e.clientY;
-    document.onmousemove = dragElement;
-    document.onmouseup = removeListeners;
+    if (e.type === "mousedown") {
+      document.onmousemove = dragElement;
+      document.onmouseup = removeListeners;
+    } else if (e.type = "touchstart") {
+      document.ontouchmove = dragElement;
+      document.ontouchend = removeListeners;
+    }
   }
 
   function dragElement(e) {
+    const clientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
+    const clientY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
     const square = cropSquareRef.current;
     const squareHeight = toNumber(square.style.height);
     const squareWidth = toNumber(square.style.width);
     const image = rawImageRef.current;
-    cursorDifferenceX = currentCursorX - e.clientX;
-    cursorDifferenceY = currentCursorY - e.clientY;
-    currentCursorX = e.clientX;
-    currentCursorY = e.clientY;
-    const newPositionX = square.offsetLeft - cursorDifferenceX
-    const newPositionY = square.offsetTop - cursorDifferenceY
+    cursorDifferenceX = currentCursorX - clientX;
+    cursorDifferenceY = currentCursorY - clientY;
+    currentCursorX = clientX;
+    currentCursorY = clientY;
+    const newPositionX = square.offsetLeft - cursorDifferenceX;
+    const newPositionY = square.offsetTop - cursorDifferenceY;
     if (newPositionX + squareWidth <= image.width && newPositionX >= 0) square.style.left = newPositionX + "px";
     if (newPositionY + squareHeight <= image.height && newPositionY >= 0) square.style.top = newPositionY + "px";
   }
@@ -79,18 +86,29 @@ export function Cropper({ selectedImage, setCroppedImage, setCropFunction }) {
       moveDirectionX = -1;
       moveDirectionY = -1;
     }
-    currentCursorX = e.clientX;
-    currentCursorY = e.clientY;
-    document.onmousemove = resizeElement;
-    document.onmouseup = removeListeners;
+  
+    if (e.type === "mousedown") {
+      currentCursorX = e.clientX;
+      currentCursorY = e.clientY;
+      document.onmousemove = resizeElement;
+      document.onmouseup = removeListeners;
+    } else if (e.type = "touchstart") {
+      currentCursorX = e.touches[0].clientX;
+      currentCursorY = e.touches[0].clientY;
+      document.ontouchmove = resizeElement;
+      document.ontouchend = removeListeners;
+    }
+    document.body.style.overflow = "hidden"; // Prevents scrolling on smartphones in landscape orientation
   }
 
   function resizeElement(e) {
     const square = cropSquareRef.current;
-    cursorDifferenceX = currentCursorX - e.clientX;
-    cursorDifferenceY = currentCursorY - e.clientY;
-    currentCursorX = e.clientX;
-    currentCursorY = e.clientY;
+    const clientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
+    const clientY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
+    cursorDifferenceX = currentCursorX - clientX;
+    cursorDifferenceY = currentCursorY - clientY;
+    currentCursorX = clientX;
+    currentCursorY = clientY;
     const newWidth = toNumber(square.style.width) + cursorDifferenceX * moveDirectionX;
     const newHeight = toNumber(square.style.height) + cursorDifferenceY * moveDirectionY;
     let newLeft = toNumber(square.style.left);
@@ -111,6 +129,9 @@ export function Cropper({ selectedImage, setCroppedImage, setCropFunction }) {
   function removeListeners() {
     document.onmousemove = null;
     document.onmouseup = null;
+    document.ontouchmove = null;
+    document.ontouchend = null;
+    document.body.style.overflow = "auto";
   }
 
   function toNumber(stringPx) {
@@ -119,12 +140,14 @@ export function Cropper({ selectedImage, setCroppedImage, setCropFunction }) {
 
   return(
     <StyledCropper>
-      <img className="raw-image" src={rawImageURL} ref={rawImageRef} onLoad={decideSquareSize} />
-      <div className="crop-square" ref={cropSquareRef} onMouseDown={startDrag}>
-        <div onMouseDown={startResize} className="resize-corner top-left"></div>
-        <div onMouseDown={startResize} className="resize-corner top-right"></div>
-        <div onMouseDown={startResize} className="resize-corner bottom-left"></div>
-        <div onMouseDown={startResize} className="resize-corner bottom-right"></div>
+      <div className="limiting-container">
+        <img className="raw-image" src={rawImageURL} ref={rawImageRef} onLoad={decideSquareSize} />
+        <div className="crop-square" ref={cropSquareRef} onMouseDown={startDrag} onTouchStart={startDrag}>
+          <div onMouseDown={startResize} onTouchStart={startResize} className="resize-corner top-left"></div>
+          <div onMouseDown={startResize} onTouchStart={startResize} className="resize-corner top-right"></div>
+          <div onMouseDown={startResize} onTouchStart={startResize} className="resize-corner bottom-left"></div>
+          <div onMouseDown={startResize} onTouchStart={startResize} className="resize-corner bottom-right"></div>
+        </div>
       </div>
       <canvas ref={canvasRef}></canvas>
     </StyledCropper>

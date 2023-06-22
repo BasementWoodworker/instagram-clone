@@ -2,11 +2,19 @@ import styled from "styled-components";
 
 export const StyledCropper = styled.div`  
   position: relative;
-  top: 50%;
-  transform: translate(0, -60%);
-  flex: 0 1 0;
+  
+  flex: 1 1 0;
+  align-content: center;
   display: grid;
   user-select: none;
+  padding: 10px;
+
+
+  .limiting-container {
+    position: relative;
+    display: grid;
+    background-color: #555555; // For contrast on images with transparent background
+  }
 
   img.raw-image {
     display: block;

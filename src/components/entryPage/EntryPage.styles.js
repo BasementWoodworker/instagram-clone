@@ -13,6 +13,7 @@ export const StyledEntryPage = styled.div`
   }
 
   img.greeting-image {
+    align-self: center;
     height: 400px;
     border-radius: 20px;
     margin-right: 40px;
@@ -119,5 +120,11 @@ export const StyledEntryPage = styled.div`
     margin-top: 10px;
     padding: 8px;
     background-size: contain;
+  }
+
+  @media (max-width: 650px) {
+    img.greeting-image {
+      display: none;
+    }
   }
 `
