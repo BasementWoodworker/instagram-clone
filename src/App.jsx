@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { useDispatch } from "react-redux";
 import { initializeApp } from "firebase/app";
@@ -28,8 +28,14 @@ const theme = {
 }
 
 export function App() {
+  //window.scrollTo(0, 0); // This is here to avoid preserving scroll position when user goes to the same route. This with Date.now() keys on routes achieves
+                         // page refresh effect without actually refreshing the page which happens when navigation icons are simply <a> instead of <Link> (Canceled)
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const previousLocation = location.state?.previousLocation;
+  const [postsInUserPage, setPostsInUserPage] = useState([]);
+  const [postsInFeed, setPostsInFeed] = useState([]);
 
   useEffect(() => {
     onAuthStateChanged(getAuth(), (user) => {
@@ -58,16 +64,21 @@ export function App() {
         <GlobalStyles />
         <Header />
         <main>
-          <Routes>
-            <Route path="/" element={<RootPathRedirect />} />
-            <Route path="/login" element={<EntryPage />} />
-            <Route path="/register" element={<EntryPage />} />
-            <Route path="/feed" element={<Feed />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/make-new-post" element={<MakeNewPost />} />
-            <Route path="/user/:username" element={<UserPage />} />
-            <Route path="/post/:postId" element={<PostPage />} />
+          <Routes location={previousLocation || location}>
+            <Route path="/" element={<RootPathRedirect key={Date.now()} />} />
+            <Route path="/login" element={<EntryPage key={Date.now()} />} />
+            <Route path="/register" element={<EntryPage key={Date.now()} />} />
+            <Route path="/feed" element={<Feed posts={postsInFeed} setPosts={setPostsInFeed} />} />
+            <Route path="/settings" element={<Settings key={Date.now()} />} />
+            <Route path="/make-new-post" element={<MakeNewPost key={Date.now()} />} />
+            <Route path="/user/:username" element={<UserPage userPosts={postsInUserPage} setUserPosts={setPostsInUserPage} />} />
           </Routes>
+
+          { (
+            <Routes>
+              <Route path="/post/:postId" element={<PostPage setPostsInUserPage={setPostsInUserPage} setPostsInFeed={setPostsInFeed} />} />
+            </Routes>
+          )}
         </main>
         <Footer />
       </ThemeProvider>

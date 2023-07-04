@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export function TopBar({ mobile, username, avatar, setShowDeletionModal, showDeleteButton, showCloseButton }) {
+  const navigate = useNavigate();
   const [openDropdown, setOpenDropdown] = useState(false);
   const autoCloseTimeout = useRef();
   const dropdown = useRef();
@@ -28,7 +29,7 @@ export function TopBar({ mobile, username, avatar, setShowDeletionModal, showDel
             {openDropdown && <button className="delete-post" onClick={() => setShowDeletionModal(true)}>Delete post</button>}
           </div>
         }
-        {showCloseButton && <button className="close-post" onClick={() => window.history.back()}></button>}
+        {showCloseButton && <button className="close-post" onClick={() => navigate(-1)}></button>}
       </div>
     </div>
   )

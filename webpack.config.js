@@ -14,7 +14,8 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: "Instagram clone"
+      title: "Instagram clone",
+      favicon: "./src/assets/icons/favicon.svg"
     })
   ],
   module: {
@@ -33,7 +34,7 @@ module.exports = {
         }
       },
       {
-        test: /\.(svg|gif|jpg|png)$/i,
+        test: /\.(ttf|svg|gif|jpg|png)$/i,
         type: "asset/resource"
       }
     ]

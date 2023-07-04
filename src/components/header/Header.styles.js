@@ -88,6 +88,9 @@ export const StyledHeader = styled.header`
     font-size: 24px;
     font-weight: bold;
     margin-left: 8px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   @media (max-width: 600px) {
@@ -104,7 +107,7 @@ export const StyledHeader = styled.header`
     }
   }
 
-  @media (max-width: 700px) {
+  @media (max-width: 900px) {
     .your-info > .username {
       display: none;
     }

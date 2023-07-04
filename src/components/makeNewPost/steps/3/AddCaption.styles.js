@@ -9,8 +9,8 @@ export const StyledAddCaption = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    width: 250px;
-    max-width: 100%;
+    min-width: 200px;
+    max-width: 500px;
     margin-top: 10px;
     background-color: white;
     border: 1.5px solid ${props => props.theme.borderColor};
@@ -26,18 +26,23 @@ export const StyledAddCaption = styled.div`
     font-size: 24px;
     font-weight: bold;
     border-bottom: 1.5px solid ${props => props.theme.borderColor};
-  }
 
-  .your-info > img.avatar {
-    height: 45px;
-    width: 45px;
-    border-radius: 50%;
-    border: 1.5px solid #333333;
+    img.avatar {
+      height: 45px;
+      width: 45px;
+      border-radius: 50%;
+      border: 1.5px solid #333333;
+    }
+
+    .username {
+      overflow: hidden;
+    }
   }
 
   .cropped-image {
     object-fit: contain;
     max-height: 50vh;
+    max-width: 100%;
   }
 
   textarea.caption-input {

@@ -42,13 +42,13 @@ export function Header() {
 
   return(
     <StyledHeader className={hidden ? "hidden" : ""}>
-      <Link to="/" className="logo">Fakestagram</Link>
+      <a href="/" className="logo">Fakestagram</a>
       <nav>
-        <a href="/feed" className="home" title="Feed"></a>
-        <a href="/make-new-post" className="add-post" title="Make post"></a>
-        <a href="/settings" className="settings" title="Settings"></a>
+        <Link to="/feed" className="home" title="Feed" reloadDocument></Link>
+        <Link to="/make-new-post" className="add-post" title="Make post"></Link>
+        <Link to="/settings" className="settings" title="Settings"></Link>
         <button className="log-out" title="Log Out" onClick={handleLogOut}></button>
-        <Link to={`user/${you && you.username}`} className="your-info" title="Your profile">
+        <Link to={you?.username ? "/user/" + you.username : "#"} className="your-info" title="Your profile">
           <img src={you && you.photoURL} />
           <span className="username">{you && you.username}</span>
         </Link>

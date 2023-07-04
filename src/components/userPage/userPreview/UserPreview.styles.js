@@ -1,7 +1,10 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
+const borderRadius = "4px";
+
 export const StyledUserPreviewLink = styled(Link)`
+  position: relative; // To contain skeleton animation within
   display: flex;
   align-items: center;
   gap: 10px;
@@ -10,8 +13,13 @@ export const StyledUserPreviewLink = styled(Link)`
   color: inherit;
   background-color: #e4e4e4;
   padding: 10px;
-  border-radius: 4px;
-  width: 200px;
+  border-radius: ${borderRadius};
+  width: 100%;
+  min-width: 250px;
+
+  &.skeleton::before {
+    border-radius: ${borderRadius};
+  }
 
   &:hover {
     background-color: #d1d1d1;
@@ -25,10 +33,13 @@ export const StyledUserPreviewLink = styled(Link)`
 
   .username {
     font-weight: bold;
+    font-size: 20px;
+    white-space: nowrap;
   }
 
   .full-name {
     color: dimgrey;
+    white-space: nowrap;
   }
 
   button.remove {

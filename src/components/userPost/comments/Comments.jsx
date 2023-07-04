@@ -4,7 +4,7 @@ import { getFirestore, collection, getDocs, getDoc, doc, query, orderBy, limit }
 import { Comment } from "./Comment";
 import { LoadingSpinner } from "../../loadingSpinner/LoadingSpinner";
 
-export function Comments({ view, postId, author, authorComment, displayedComments, setDisplayedComments }) {
+export function Comments({ view, postId, author, authorComment, displayedComments, setDisplayedComments, deleteComment }) {
   const [hideShowAllComments, setHideShowAllComments] = useState(true);
   const [loadingAllComments, setLoadingAllComments] = useState(false);
 
@@ -65,7 +65,7 @@ export function Comments({ view, postId, author, authorComment, displayedComment
       <Comment text={authorComment} username={author} key="authorsComment" />
       {hideShowAllComments || <button className="view-all-comments" onClick={viewAllComments}>View all comments</button>}
       {loadingAllComments && <LoadingSpinner />}
-      {displayedComments.map(comment => <Comment key={comment.id} text={comment.text} username={comment.username} commentId={comment.id} postId={postId} />)}
+      {displayedComments.map(comment => <Comment key={comment.id} text={comment.text} username={comment.username} commentId={comment.id} deleteComment={deleteComment} />)}
     </div>
   )
 }

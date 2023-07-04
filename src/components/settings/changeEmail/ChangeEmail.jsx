@@ -46,7 +46,7 @@ export function ChangeEmail() {
         <h2 className="setting-type">Email</h2>
         <label>
           <span>Enter new email</span>
-          <input type="email" required ref={emailRef} defaultValue={currentEmail} autoComplete="off" />
+          <input type="email" required ref={emailRef} defaultValue={currentEmail} autoComplete="off" placeholder=" " />
         </label>
         {loading ? <LoadingSpinner /> : <div className={"message " + message.type}>{message.text}</div>}
         <button type="submit">Save</button>

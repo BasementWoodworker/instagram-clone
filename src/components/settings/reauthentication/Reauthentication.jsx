@@ -31,10 +31,10 @@ export function Reauthentication({ hide, action }) {
       <form onMouseDown={e => e.stopPropagation()} onSubmit={handleSubmit}>
         <label>
           <div>Please enter your current password</div>
-          <input type="password" required ref={passwordRef} onInput={() => setErrorMsg("")} autoComplete="off" />
+          <input type="password" required ref={passwordRef} onInput={() => setErrorMsg("")} autoComplete="off" placeholder=" " />
         </label>
         {loading ? <LoadingSpinner /> : <div className="message error">{errorMsg}</div>}
-        <button type="submit">Confirm</button>
+        <button type="submit" disabled={loading}>Confirm</button>
         <button className="close" type="button" onClick={hide}>✖</button>
       </form>
     </StyledReauthentication>

@@ -7,6 +7,7 @@ import closeIcon from "../../assets/icons/close.svg";
 
 const scrollbarThumbColor = "#333333";
 const scrollbarTrackColor = "#eeeeee";
+const borderRadius = "8px";
 
 export const StyledUserPost = styled.div`
   position: relative;
@@ -14,12 +15,27 @@ export const StyledUserPost = styled.div`
   max-width: 600px;
   background-color: white;
   border: 1.5px solid ${props => props.theme.borderColor};
-  border-radius: 8px;
-  margin: 40px 20px;
+  border-radius: ${borderRadius};
+  margin: 40px auto;
+
+  &.placeholder.skeleton::before {
+    border-radius: ${borderRadius};
+  }
 
   &.placeholder {
     background-color: white;
-    min-height: 400px;
+    min-height: 500px;
+  }
+
+  &.fullview-placeholder {
+    height: 100%;
+    width: 100%;
+    max-width: 1000px;
+    margin: auto;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 0;
   }
 
   & > *:not(.post-image-container, form.make-new-comment, button.delete-post, .modal) {
@@ -50,6 +66,8 @@ export const StyledUserPost = styled.div`
   .author-info > .username {
     font-weight: bold;
     font-size: 18px;
+    overflow-wrap: anywhere;
+    margin-right: 10px;
   }
 
   .top-bar > .buttons {
@@ -94,7 +112,7 @@ export const StyledUserPost = styled.div`
     cursor: pointer;
     object-fit: contain;
     width: 100%;
-    max-height: 70vh;
+    max-height: 100vh;
   }
 
   div.like-and-comment-buttons {
@@ -206,6 +224,11 @@ export const StyledUserPost = styled.div`
     padding: 2px 0;
   }
 
+  .time-from-creation {
+    color: dimgrey;
+    font-size: 12px;
+  }
+
   form.make-new-comment {
     display: flex;
     border-top: 1.5px solid ${props => props.theme.borderColor};
@@ -238,6 +261,14 @@ export const StyledUserPost = styled.div`
   }
 
   @media (max-width: 600px) {
+    &.placeholder {
+      min-height: 380px;
+    }
+
+    &.placeholder.skeleton::before {
+      border-radius: 0;
+    }
+
     width: 100%;
     margin: 20px 0;
     border-radius: 0;
@@ -252,6 +283,8 @@ export const StyledUserPostFullView = styled(StyledUserPost)`
   max-width: 1000px;
   min-height: 100%;
   border-radius: 0;
+  border-top: 0;
+  border-bottom: 0;
   margin: 0 auto;
 
   .separator-line {
@@ -288,13 +321,17 @@ export const StyledUserPostFullView = styled(StyledUserPost)`
   }
 
   #right-part > .comments {
-    flex: 1 1 auto;
+    flex: 1 1 0;
     max-height: 100%;
   }
 
   #right-part > form.make-new-comment > input {
     width: auto;
     border-radius: 0;
+  }
+
+  .time-from-creation {
+    padding-bottom: 8px;
   }
 
   @media (max-width: 600px) {
@@ -313,6 +350,11 @@ export const StyledUserPostFullView = styled(StyledUserPost)`
     #right-part {
       flex: 1 1 auto;
       border: none;
+    }
+
+    #right-part > .comments {
+      flex: 1 1 auto;
+      max-height: 75vh;
     }
   }
 `

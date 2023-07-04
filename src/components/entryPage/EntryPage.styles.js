@@ -23,6 +23,7 @@ export const StyledEntryPage = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
+    max-width: 300px;
   }
 
   h1 {
@@ -42,7 +43,6 @@ export const StyledEntryPage = styled.div`
     flex-direction: column;
     align-items: center;
     gap: 7px;
-    width: 300px;
     padding: 20px 40px;
   }
 

@@ -29,7 +29,7 @@ export function UserPreview({ uid, isOnYourPage, yourId, modifyInfoAfterRemoving
   if (!userInfo) return null;
 
   return(
-    <StyledUserPreviewLink to={`/user/${userInfo.username}`}>
+    <StyledUserPreviewLink to={`/user/${userInfo.username}`} className={userInfo?.avatar ? "" : "skeleton"}>
       <img src={userInfo && userInfo.avatar} />
       <div>
         <div className="username">@{userInfo.username ?? "Deleted account"}</div>

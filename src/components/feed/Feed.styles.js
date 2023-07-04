@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 export const StyledFeed = styled.div`
+  width: 100%;
   margin: auto;
 
   .loading-spinner {

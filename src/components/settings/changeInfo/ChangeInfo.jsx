@@ -104,14 +104,14 @@ export function ChangeInfo() {
       </label>
       <label>
         <span>Username</span>
-        <input type="text" required ref={usernameRef} defaultValue={username} />
+        <input type="text" required ref={usernameRef} defaultValue={username} placeholder=" " maxLength="20" />
       </label>
       <label>
         <span>Full Name</span>
-        <input type="text" required ref={fullNameRef} defaultValue={fullName} />
+        <input type="text" required ref={fullNameRef} defaultValue={fullName} placeholder=" " maxLength="30" />
       </label>
       {loading ? <LoadingSpinner /> : <div className={"message " + message.type}>{message.text}</div>}
-      <button type="submit">Save</button>
+      <button type="submit" disabled={loading}>Save</button>
     </StyledChangeInfo>
   )
 }

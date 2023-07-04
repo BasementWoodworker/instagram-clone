@@ -62,7 +62,6 @@ export const StyledCropper = styled.div`
   }
 
   canvas {
-    position: absolute;
-    z-index: -1;
+    display: none;
   }
 `

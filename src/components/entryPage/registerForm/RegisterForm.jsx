@@ -20,6 +20,11 @@ export function RegisterForm() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  function clearValidity(e) {
+    e.target.setCustomValidity("");
+    setErrorMsg("");
+  }
+
   async function createUserInFirestore(username, fullName, uid) {
     const user = {
       username,
@@ -52,8 +57,18 @@ export function RegisterForm() {
   }
 
   function modifyErrorMessage(error) {
-    if (error.message === "Firebase: Error (auth/invalid-email).") error.message = "Invalid email";
-    if (error.message === "Firebase: Error (auth/email-already-in-use).") error.message = "Error: Email is already in use";
+    console.log(error.message);
+    if (error.message === "Firebase: Error (auth/invalid-email).") {
+      error.message = "Invalid email";
+      emailRef.current.setCustomValidity("Invalid email");
+    }
+    if (error.message === "Firebase: Error (auth/email-already-in-use).") {
+      error.message = "Email is already in use";
+      emailRef.current.setCustomValidity("Invalid email");
+    }
+    if (error.message === "This username is taken") {
+      usernameRef.current.setCustomValidity("This username is taken");
+    }
   }
 
   async function submitHandler(e) {
@@ -84,15 +99,15 @@ export function RegisterForm() {
     <form onSubmit={submitHandler}>
       <h1>Create new account</h1>
       <label>
-        <input type="email" required ref={emailRef} placeholder=" " />
+        <input type="email" required ref={emailRef} placeholder=" " onInput={clearValidity} />
         <span>Email</span>
       </label>
       <label>
-        <input required ref={usernameRef} placeholder=" " />
+        <input required ref={usernameRef} placeholder=" " onInput={clearValidity} maxLength="20" />
         <span>Username</span>
       </label>
       <label>
-        <input required ref={fullNameRef} placeholder=" " />
+        <input required ref={fullNameRef} placeholder=" " maxLength="30" />
         <span>Full Name</span>
       </label>
       <label>
@@ -104,7 +119,7 @@ export function RegisterForm() {
         <span>Confirm password</span>
       </label>
       {loading ? <LoadingSpinner /> : <div className="error-message">{errorMsg}</div>}
-      <button type="submit">Register</button>
+      <button type="submit" disabled={loading}>Register</button>
     </form>
     </>
   )

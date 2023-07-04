@@ -1,9 +1,10 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 import likeIcon from "../../../assets/icons/liked.svg";
 import commentIcon from "../../../assets/icons/comment-full.svg";
 
-export const StyledSmallPost = styled.div`
+export const StyledSmallPost = styled(Link)`
   position: relative;
   cursor: pointer;
   aspect-ratio: 1;

@@ -51,11 +51,11 @@ export function ChangePassword() {
         <h2 className="setting-type">Password</h2>
         <label>
           <span>Enter new password</span>
-          <input type="password" required minLength="6" ref={passwordRef} onInput={checkPasswordMatch} autoComplete="off" />
+          <input type="password" required minLength="6" ref={passwordRef} onInput={checkPasswordMatch} autoComplete="off" placeholder=" " />
         </label>
         <label>
           <span>Confirm new password</span>
-          <input type="password" required minLength="6" ref={passwordConfirmationRef} onInput={checkPasswordMatch} autoComplete="off" />
+          <input type="password" required minLength="6" ref={passwordConfirmationRef} onInput={checkPasswordMatch} autoComplete="off" placeholder=" " />
         </label>
         {loading ? <LoadingSpinner /> : <div className={"message " + message.type}>{message.text}</div>}
         <button type="submit">Save</button>

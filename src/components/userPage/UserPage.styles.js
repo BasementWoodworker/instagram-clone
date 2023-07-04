@@ -16,6 +16,7 @@ export const StyledUserPage = styled.div`
   .avatar {
     height: 140px;
     width: 140px;
+    border: 1px solid #333333;
     border-radius: 50%;
   }
 
@@ -28,6 +29,7 @@ export const StyledUserPage = styled.div`
     color: dimgrey;
     font-size: 18px;
     text-indent: 2px;
+    margin-bottom: 4px;
   }
 
   button.follow {
@@ -70,6 +72,15 @@ export const StyledUserPage = styled.div`
     gap: 40px;
   }
 
+  .users {
+    width: min-content;
+    margin: auto;
+
+    & > * {
+      margin-bottom: 8px;
+    }
+  }
+
   .loading-spinner {
     margin: 100px auto;
   }
@@ -81,6 +92,11 @@ export const StyledUserPage = styled.div`
     white-space: nowrap;
   }
 
+  .no-posts {
+    grid-column: 1 / 4;
+  }
+
+  .no-posts,
   .no-followers,
   .no-following {
     color: dimgrey;
@@ -92,7 +108,7 @@ export const StyledUserPage = styled.div`
     margin: 10px auto;
 
     .user-info {
-      grid-template-columns: 1fr 1fr 10px;
+      grid-template-columns: 1fr 1fr;
     }
 
     .avatar {
@@ -100,8 +116,18 @@ export const StyledUserPage = styled.div`
       width: 100px;
     }
 
+    .username,
+    .full-name {
+      overflow-wrap: anywhere;
+      text-wrap: balance;
+    }
+
     .separator-line-profile {
       margin: 20px 0;
+    }
+
+    .change-displayed-content {
+      gap: 10px;
     }
 
     .change-displayed-content > button > span {

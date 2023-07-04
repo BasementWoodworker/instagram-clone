@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
 import { StyledFooter } from "./Footer.styles";
 import { noHeaderAndFooterPaths } from "../../noHeaderAndFooterPaths";
@@ -11,9 +11,9 @@ export function Footer() {
 
   return(
     <StyledFooter>
-      <a href="/settings" className="settings" title="Settings"></a>
-      <a href="/make-new-post" className="add-post" title="Make post"></a>
-      <a href="/feed" className="home" title="Feed"></a>
+      <Link to="/settings" className="settings" title="Settings"></Link>
+      <Link to="/make-new-post" className="add-post" title="Make post"></Link>
+      <Link to="/feed" className="home" title="Feed" reloadDocument></Link>
     </StyledFooter>
   )
 }

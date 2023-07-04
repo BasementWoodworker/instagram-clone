@@ -81,7 +81,7 @@ export function DeleteAccount() {
       <StyledDeleteAccount onSubmit={submitHandler} className="setting">
         <p>❗Your account will be deleted forever</p>
         {loading ? <LoadingSpinner /> : <div className={"message " + message.type}>{message.text}</div>}
-        <button type="submit" className="delete-account">Delete Account</button>
+        <button type="submit" className="delete-account" disabled={loading}>Delete Account</button>
       </StyledDeleteAccount>
       {showReauthentication && <Reauthentication hide={() => setShowReauthentication(false)} action={deleteAllData} />}
     </>

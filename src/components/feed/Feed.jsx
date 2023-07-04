@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
-import { getFirestore, doc, getDoc, getDocs, collection, query, limit, orderBy, startAfter, endBefore, startAt, endAt } from "firebase/firestore";
+import { getFirestore, doc, getDoc, getDocs, collection, query, limit, orderBy, startAfter } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 import { StyledFeed } from "./Feed.styles";
 import { UserPost } from "../userPost/UserPost";
-import { UserPostModal } from "../userPostModal/UserPostModal";
 import { LoadingSpinner } from "../loadingSpinner/LoadingSpinner";
 
 function useStateThatIsUpToDateInEventHandlers(initialState) {
@@ -17,9 +16,7 @@ function useStateThatIsUpToDateInEventHandlers(initialState) {
   return [state, setStateModified, stateRef];
 }
 
-export function Feed() {
-  const [posts, setPosts] = useState([]);
-  const [displayedPost, setDisplayedPost] = useState(null);
+export function Feed({ posts, setPosts }) {
   const [loading, setLoading, loadingRefedValue] = useStateThatIsUpToDateInEventHandlers(true);
   const stopPoint = useRef(null);
   const [message, setMessage] = useState("");
@@ -62,7 +59,7 @@ export function Feed() {
 
   async function processLoadedPosts(arrayOfPostDocs) {
     const processedResponse = await Promise.all(arrayOfPostDocs.map( async post => {
-      const { text, uid, likes } = post.data();
+      const { text, uid, likes, timestamp } = post.data();
       const avatarPath = `userImages/${uid}/avatar`;
       const imagePath = `userImages/${uid}/${post.id}`;
       const username = (await getDoc(doc(getFirestore(), "users", uid))).data().username;
@@ -77,7 +74,8 @@ export function Feed() {
         image: postImage,
         text,
         id: post.id,
-        likes
+        likes,
+        timestamp
       }
     }));
     setPosts(prev => prev.concat(processedResponse));
@@ -95,6 +93,7 @@ export function Feed() {
   }
 
   useEffect(() => { 
+    setPosts([]);
     firstLoad();
     window.addEventListener("scroll", checkDistance);
     return () => window.removeEventListener("scroll", checkDistance);
@@ -115,13 +114,15 @@ export function Feed() {
             text={post.text}
             avatar={post.avatar}
             initialLikes={post.likes}
+            timestamp={post.timestamp}
             removePostFromFeed={removePostFromFeed}
-            setDisplayedPost={setDisplayedPost}
+            setPostsInFeed={setPosts}
+            newCommentForFeedOnly={post.newComment}
+            freshlyDeletedComment={post.deletedComment}
           />
       })}
       {loading && <LoadingSpinner size="150px" type="2" />}
       <div className="message">{message}</div>
-      {displayedPost && <UserPostModal postInfo={displayedPost} closeModal={() => setDisplayedPost(null)} />}
     </StyledFeed>
   )
 }

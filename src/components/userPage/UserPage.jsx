@@ -10,7 +10,6 @@ import { selectUser} from "../../redux/features/user/userSlice";
 import { requestUserInfo } from "../../reusableFunctions/requestUserInfo";
 import { getUserAvatar } from "../../reusableFunctions/getUserAvatar";
 import { SmallPost } from "./smallPost/SmallPost";
-import { UserPostModal } from "../userPostModal/UserPostModal";
 import { followUser, unFollowUser, getUserFollowers } from "../../reusableFunctions/followFunctions";
 
 async function getUserId(username) {
@@ -19,11 +18,9 @@ async function getUserId(username) {
   return response.data().uid;
 }
 
-export function UserPage() {
+export function UserPage({ userPosts, setUserPosts }) {
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
-  const [userPosts, setUserPosts] = useState([]);
-  const [openedPost, setOpenedPost] = useState(null);
   const [displayedContent, setDisplayedContent] = useState("posts");
   const followButtonRef = useRef();
   const location = useLocation();
@@ -31,7 +28,7 @@ export function UserPage() {
   const you = useSelector(selectUser);
   
   useEffect(() => {
-    console.log("location changed", location);
+    if (username === userInfo?.username) return;
     setUserInfo(null);
     setDisplayedContent("posts");
     setLoading(true);
@@ -128,7 +125,9 @@ export function UserPage() {
       <div className="separator-line-profile"></div>
       {displayedContent === "posts" ? 
         <div className="posts">
-          {userPosts.map(id => <SmallPost key={id} postId={id} userId={userInfo.uid} setOpenedPost={setOpenedPost} />)}
+          {userPosts.length === 0 ?
+            <div className="no-posts">No posts</div> :
+            userPosts.map(id => <SmallPost key={id} postId={id} userId={userInfo.uid} />)}
         </div> :
         <div className="users">
           {displayedContent === "followers" ? 
@@ -137,7 +136,6 @@ export function UserPage() {
           }
         </div>
       }
-      {openedPost && <UserPostModal postInfo={openedPost} closeModal={() => setOpenedPost(null)} avatar={userInfo.avatarURL} username={username} />}
     </StyledUserPage>
   )
 }
